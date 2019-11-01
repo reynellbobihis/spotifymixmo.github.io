@@ -240,7 +240,8 @@ export class SpotifyService {
       `Server returned code: ${err.status}, error message is: ${err.message}`;
 
     if (localStorage.getItem('hasDevices') !== '1' && err.status == 404) {
-      if (confirm('No available devices to play to. Open spotify online?\nError message: ' + err.message)) {
+      if (localStorage.getItem('popupsBlocked') !== '1'
+        && confirm('No available devices to play to. Open spotify online?\nError message: ' + err.message)) {
         if (localStorage.getItem('popupsBlocked') !== '0') {
           const spotifyWin = window.open('https://open.spotify.com', '_blank');
           if (!spotifyWin || spotifyWin.closed || typeof spotifyWin.closed === 'undefined') {
@@ -253,6 +254,7 @@ export class SpotifyService {
         }
       }
     } else if (localStorage.getItem('gettingthetoken') !== '1'
+      && localStorage.getItem('popupsBlocked') !== '1'
       && (confirm('There has been an error.\nMessage: ' + err.message + '\nTry to reauthorize?'))) {
       localStorage.setItem('redirect', window.location.href);
       const watchToken = setInterval(() => {
