@@ -26,9 +26,9 @@ export class SpotifyService {
 
   constructor(private http: HttpClient) {
     const baseElement: HTMLElement = document.querySelector('base');
-    const redirectUri = baseElement.getAttribute('href').length > 0 ?
-      baseElement.getAttribute('href') :
-      'http://' + window.location.host + '/';
+    const redirectUri = baseElement.getAttribute('href').length > 0
+      ? baseElement.getAttribute('href')
+      : 'http://' + window.location.host + '/';
     const uri = 'https://accounts.spotify.com/authorize' +
     '?client_id=' + this.clientId +
     '&response_type=token' +
@@ -241,9 +241,19 @@ export class SpotifyService {
 
     if (localStorage.getItem('hasDevices') !== '1' && err.status == 404) {
       if (confirm('No available devices to play to. Open spotify online?\nError message: ' + err.message)) {
-        window.open('https://open.spotify.com', '_blank');
+        if (localStorage.getItem('popupsBlocked') !== '0') {
+          const spotifyWin = window.open('https://open.spotify.com', '_blank');
+          if (!spotifyWin || spotifyWin.closed || typeof spotifyWin.closed === 'undefined') {
+            localStorage.setItem('popupsBlocked', '1');
+          } else {
+            localStorage.setItem('popupsBlocked', '0');
+          }
+        } else {
+          console.log('Popups are being blocked!');
+        }
       }
-    } else if (localStorage.getItem('gettingthetoken') !== '1' && (confirm('There has been an error.\nMessage: ' + err.message + '\nTry to reauthorize?'))) {
+    } else if (localStorage.getItem('gettingthetoken') !== '1'
+      && (confirm('There has been an error.\nMessage: ' + err.message + '\nTry to reauthorize?'))) {
       localStorage.setItem('redirect', window.location.href);
       const watchToken = setInterval(() => {
         if (localStorage.getItem('token') !== null && localStorage.getItem('token') !== undefined) {
@@ -254,7 +264,16 @@ export class SpotifyService {
         }
       }, 1000);
       localStorage.setItem('gettingthetoken', '1');
-      window.open(localStorage.getItem('spotifyUrlAuthorize'), '_blank');
+      if (localStorage.getItem('popupsBlocked') !== '0') {
+        const authWin = window.open(localStorage.getItem('spotifyUrlAuthorize'), '_blank');
+        if (!authWin || authWin.closed || typeof authWin.closed === 'undefined') {
+          localStorage.setItem('popupsBlocked', '1');
+        } else {
+          localStorage.setItem('popupsBlocked', '0');
+        }
+      } else {
+        console.log('Popups are being blocked!');
+      }
     }
 
     return throwError(errorMessage);
