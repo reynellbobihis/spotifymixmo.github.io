@@ -28,7 +28,7 @@ export class SpotifyService {
     const uri = 'https://accounts.spotify.com/authorize' +
     '?client_id=' + this.clientId +
     '&response_type=token' +
-    '&redirect_uri=' + encodeURIComponent('http://' + window.location.host + '/') +
+    '&redirect_uri=' + encodeURIComponent((document.querySelector('base') || {}).href) +
     '&scope=' + this.scope.join('%20');
     localStorage.setItem('spotifyUrlAuthorize', uri);
   }
