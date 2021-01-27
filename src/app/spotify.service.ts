@@ -27,7 +27,7 @@ export class SpotifyService {
   constructor(private http: HttpClient) {
     const baseElement: HTMLElement = document.querySelector('base');
     const redirectUri = baseElement.getAttribute('href').length > 0
-      ? baseElement.getAttribute('href')
+      ? baseElement.getAttribute('href') + '/'
       : 'http://' + window.location.host + '/';
     const uri = 'https://accounts.spotify.com/authorize' +
     '?client_id=' + this.clientId +
