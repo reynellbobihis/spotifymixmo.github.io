@@ -1,0 +1,171 @@
+
+<div class="bg-violet box-shadow d-flex" style="height: 76px">
+  <div class="header-menubutton d-md-none">
+    <a href="javascript:" class="py-4 pl-4 d-flex color-white" (click)="toggleMenu()">
+      <i class="material-icons mobile-menu-icon-inactive">menu</i>
+      <i class="material-icons mobile-menu-icon-active">arrow_back</i>
+    </a>
+  </div>
+  <div class="header-logo d-none d-xl-block">
+    <a routerLink="/" class="logo p-4 d-flex color-white">
+      <i class="material-icons">polymer</i>
+      <h4 class="ml-2 mb-0"><span style="font-weight: 300">Spotify</span><b>MixMo</b></h4>
+    </a>
+  </div>
+  <div class="header-controls d-md-none d-md-block">
+    <div class="row">
+      <div class="d-none d-md-block col-sm-6 col-md-7 col-lg-8">
+        <div class="d-flex player">
+
+          <label class="search-box mb-0 p-0">
+            <input #searchInput name="search" ngModel required (input)="searchSubmit(searchInput)" (keyup.enter)="searchSubmit(searchInput)"
+              (blur)="setSearchFocused('0')" (focus)="setSearchFocused('1')">
+            <i class="material-icons cursor-pointer">search</i>
+          </label>
+
+          <a *ngIf="playback?.repeat_state == 'track'; else repeatButton" href="javascript:"
+            (click)="setRepeatMode('off')">
+            <i class="material-icons-outlined">repeat_one</i></a>
+          <ng-template #repeatButton>
+            <a href="javascript:" (click)="setRepeatMode(playback?.repeat_state == 'context' ? 'track' : 'context')">
+              <i class="material-icons-outlined"
+                [style.opacity]="playback?.repeat_state == 'context' ? '1' : '0.5'">repeat</i></a>
+          </ng-template>
+          <a href="javascript:" class="mr-4" (click)="toggleShuffle(playback?.shuffle_state ? false : true)">
+            <i class="material-icons-outlined"
+              [style.opacity]="playback?.shuffle_state ? '1' : '0.5'">shuffle</i></a>
+
+          <a href="javascript:" (click)="skipToPreviousTrack()">
+            <i class="material-icons-outlined">skip_previous</i></a>
+          <a *ngIf="playback?.is_playing; else playButton" href="javascript:" (click)="pausePlayback()" class="play-button">
+            <i class="material-icons">pause_circle_filled</i></a>
+          <ng-template #playButton>
+            <a href="javascript:" (click)="resumePlayback()" class="play-button">
+              <i class="material-icons-outlined">play_circle_filled</i></a>
+          </ng-template>
+          <a href="javascript:" class="mr-4" (click)="skipToNextTrack()">
+            <i class="material-icons-outlined">skip_next</i></a>
+
+          <span href="javascript:" class="mr-4 seeker d-none d-lg-block">
+            <div class="d-flex">
+              <small>{{ msToTime(playback?.progress_ms) }}</small>
+              <a href="javascript:" (click)="seek($event, playback?.item.duration_ms)" class="seeker-bar">
+                <div class="w-100" [style.backgroundImage]="backgroundColor"></div>
+              </a>
+              <small>{{ msToTime(playback?.item.duration_ms) }}</small>
+            </div>
+          </span>
+
+          <span class="dropdown">
+            <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="text-white material-icons-outlined">devices</i></a>
+            <div class="dropdown-menu dropdown-menu-right mt-2 py-4" (click)="stopPropagation($event)">
+              <h6 class="ml-4 mb-3"><small><b>Devices Available</b></small></h6>
+              <a *ngFor="let item of devices" (click)="playToDevice(item.id)" class="dropdown-item pr-5" href="javascript:">
+                <small class="{{ item.is_active ? 'device device-active' : 'device' }}">
+                  <i *ngIf="item.type == 'Computer'" class="material-icons-outlined mr-1">computer</i>
+                  <i *ngIf="item.type == 'Tablet'" class="material-icons-outlined mr-1">tablet</i>
+                  <i *ngIf="item.type == 'Smartphone'" class="material-icons-outlined mr-1">smartphone</i>
+                  <i *ngIf="item.type == 'Speaker'" class="material-icons-outlined mr-1">speaker</i>
+                  <i *ngIf="item.type == 'TV'" class="material-icons-outlined mr-1">tv</i>
+                  <i *ngIf="item.type == 'CastVideo'" class="material-icons-outlined mr-1">cast</i>
+                  <i *ngIf="item.type == 'CastAudio'" class="material-icons-outlined mr-1">cast</i>
+                  <i *ngIf="item.type !== 'Computer' &&
+                            item.type !== 'Tablet' &&
+                            item.type !== 'Smartphone' &&
+                            item.type !== 'Speaker' &&
+                            item.type !== 'TV' &&
+                            item.type !== 'CastVideo' &&
+                            item.type !== 'CastAudio'" class="material-icons-outlined mr-1">device_unknown</i>
+                  {{ item.name }}
+                  <i *ngIf="item.is_active" class="device-active-icon material-icons-outlined">volume_up</i>
+                </small>
+              </a>
+              <a class="dropdown-item pr-5" href="https://open.spotify.com" target="_blank">
+                <small class="device">
+                  <i class="material-icons-outlined mr-1">public</i>
+                  Spotify Web Player
+                </small>
+              </a>
+            </div>
+          </span>
+          <span class="dropdown">
+            <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="text-white material-icons">queue_music</i></a>
+            <div class="dropdown-menu dropdown-menu-right mt-2 py-3" (click)="stopPropagation($event)">
+              <h6 *ngIf="playback?.context" class="mx-4 mb-3 mt-2 pl-3"><small>Playing from {{ playback?.context.type }}.<b></b></small></h6>
+              <div class="mx-4 pr-4 pb-0 scrollbar" style="max-height: calc(100vh - 160px)">
+                <app-tracks-list
+                  [tracks]="playback?.context ? tracksFromContext : [playback?.item]"
+                  [uris]="playback?.context ? null : [playback?.item]"
+                  [contextUri]="playback?.context ? playback.context.uri : null"
+                  [hideAlbums]="true"
+                  [hideOptions]="true">
+                </app-tracks-list>
+              </div>
+              <h6 class="mx-4 mb-3 mt-4 pl-4"><small><b>Note:</b> Spotify does not allow to fetch the actual queue list.
+                This list is being fetched from the playback context.</small></h6>
+            </div>
+          </span>
+
+        </div>
+      </div>
+      <div class="col-md-5 col-lg-4 bg-violet-dark" style="height: 76px;">
+        <div class="playing-track playing-track-null" [class]="playback ? 'playing-track' : 'playing-track playing-track-null'">
+          <div class="playing-track-img ml-2 mr-3">
+            <img *ngIf="playback?.item.album.images[0].url" src="{{ playback?.item.album.images[0].url }}" alt="">
+            <i [hidden]="playback" class="material-icons-outlined">play_circle_filled</i>
+          </div>
+          <div class="playing-track-details text-white">
+            <h6 [hidden]="playback" class="playing-track-title mb-1">So Quiet</h6>
+            <h6 [hidden]="playback" class="playing-track-artist mb-0">Lets play some music!</h6>
+            <h6 class="playing-track-title mb-1">{{ playback?.item.name }}</h6>
+            <h6 class="playing-track-artist mb-0 cursor-pointer" [routerLink]="['/artists', playback?.item.artists[0].id]">{{ playback?.item.artists[0].name }}</h6>
+          </div>
+          <div *ngIf="playback?.item" class="playing-track-more ml-3 mr-2 dropdown">
+            <a class="color-white d-flex align-items-center" href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="material-icons-outlined">more_vert</i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-2" (click)="stopPropagation($event)">
+              <h6 class="ml-4 mb-2"><small><b>{{ playback?.item.name }}</b></small></h6>
+              <a class="dropdown-item" href="javascript:"><small>Add to Playlist</small></a>
+              <a class="dropdown-item" href="javascript:"><small>Go to song radio</small></a>
+              <a class="dropdown-item" href="javascript:" [routerLink]="['/artists', playback?.item.artists[0].id]"><small>Go to artist</small></a>
+              <a class="dropdown-item" href="javascript:" [routerLink]="['/albums', playback?.item.album.id]"><small>Go to album</small></a>
+              <a class="dropdown-item" href="javascript:"><small>Show credits</small></a>
+            </div>
+          </div>
+          <div *ngIf="user; else noUser" class="profile ml-2 mr-4 dropdown">
+            <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img class="rounded-circle" src="{{ user?.images[0].url }}" width="35px" alt="">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-2" (click)="stopPropagation($event)">
+              <h6 class="ml-4 mb-2"><small><b>{{ user?.display_name }}</b></small></h6>
+              <a class="dropdown-item pr-5" href="javascript:" (click)="spotifyAuthorize()">
+                <small class="device"><i class="fa fa-spotify mr-2"></i>ReAuthorize</small>
+              </a>
+              <a *ngIf="integration" class="dropdown-item" href="javascript:" (click)="toggleIntegration()">
+                <small class="device"><i class="fa fa-pause-circle mr-2"></i>Pause Spotify Integration</small>
+              </a>
+              <a *ngIf="!integration" class="dropdown-item" href="javascript:" (click)="toggleIntegration()">
+                <small class="device"><i class="fa fa-play-circle mr-2"></i>Continue Spotify Integration</small>
+              </a>
+            </div>
+          </div>
+          <ng-template #noUser>
+            <div class="profile ml-2 mr-4 dropdown">
+              <a class="color-white d-flex align-items-center" href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="material-icons-outlined">person</i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-2" (click)="stopPropagation($event)">
+                <a class="dropdown-item" href="javascript:" (click)="spotifyAuthorize()">
+                  <small class="device"><i class="fa fa-spotify mr-2"></i>Get Spotify Authorization</small>
+                </a>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

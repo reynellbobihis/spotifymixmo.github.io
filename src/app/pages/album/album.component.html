@@ -1,0 +1,36 @@
+<div class="app-container pb-4">
+
+  <div *ngIf="album && albumTracks" class="px-4 pt-4">
+
+    <div class="album-header d-flex mb-4">
+      <div class="album-header-img">
+        <div class="border-radius">
+          <img src="{{ album.images[0].url }}" alt=" ">
+        </div>
+      </div>
+      <div>
+        <p class="text-secondary mb-1"><small>ALBUM</small></p>
+        <h4>{{ album.name }}</h4>
+        <p class="mb-0">
+          <small>by: <a class="text-secondary" routerLink="/artists/{{ album.artists[0]?.id }}">{{ album.artists[0]?.name }}</a></small>
+          &middot; <small>{{ album.release_date|date:'MMM yyyy' }}</small> &middot; <small>{{ album.tracks.items.length }} song{{ album.tracks.items.length > 1 ? 's' : ''}}</small>
+        </p>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <app-tracks-list
+      [tracks]="albumTracks.items"
+      [contextUri]="album.uri"
+      [hideAlbums]="true">
+    </app-tracks-list>
+    </div>
+
+  </div>
+
+  <div *ngIf="album">
+    <app-artist-albums [artistId]="album.artists[0]?.id"></app-artist-albums>
+  </div>
+
+</div>
+

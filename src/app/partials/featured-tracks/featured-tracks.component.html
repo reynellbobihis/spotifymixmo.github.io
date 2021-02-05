@@ -1,0 +1,24 @@
+<div *ngIf="featuredTracks" class="px-4 pt-4 position-relative">
+  <h6>Featured Tracks</h6>
+  <div class="box-items scrollbar d-flex mt-3">
+    <div *ngFor="let item of featuredTracks" class="box-item">
+      <div class="box-item-img">
+        <div>
+          <a href="javascript:" (click)="playTrack(null, uris, item.uri)"
+            class="position-relative w-100 h-100 d-flex align-items-center justify-content-center color-black">
+            <i class="material-icons-outlined">play_circle_filled</i>
+          </a>
+        </div>
+        <img src="{{ item.album?.images[0].url }}">
+      </div>
+      <div class="box-item-details">
+        <p class="{{ item.id == currentTrackId ? 'color-violet' : '' }} box-item-details-title mt-3 mb-0">
+          <small><b>{{ item.name }}</b></small>
+        </p>
+        <p class="box-item-details-artists my-0 text-secondary">
+          <a [routerLink]="['/artists', item.artists[0]?.id]" class="{{ item.id == currentTrackId ? 'color-violet' : '' }} text-secondary"><small>{{ item.artists[0]?.name }}</small></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

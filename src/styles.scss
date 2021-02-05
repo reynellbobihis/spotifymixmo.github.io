@@ -1,1 +1,250 @@
 /* You can add global styles to this file, and also import other style files */
+@import './assets/css/bootstrap.min.css';
+@import './assets/css/font-awesome.min.css';
+@import './assets/css/material-icons.css';
+@import './assets/css/roboto.css';
+
+// VARIABLES
+$violet: #6200EE;
+$violet-dark: #4C00D5;
+$violet-light: #ECE0FD;
+
+// GLOBAL STYLES
+html, body { overflow: hidden; }
+
+body { font-family: 'Roboto', sans-serif; }
+a,
+a:hover,
+a:focus,
+input,
+textarea,
+button,
+* {
+  &, &:hover, &:focus {
+    text-decoration: none;
+    outline: 0;
+  }
+}
+
+.font-weight {
+  &-100 { font-weight: 100; }
+  &-200 { font-weight: 200; }
+  &-300 { font-weight: 300; }
+  &-400 { font-weight: 400; }
+  &-500 { font-weight: 500; }
+  &-600 { font-weight: 600; }
+  &-700 { font-weight: 700; }
+  &-800 { font-weight: 800; }
+  &-900 { font-weight: 900; }
+}
+
+.color-white { color: white !important; }
+.color-black { color: black !important; }
+.color-violet { color: $violet !important; }
+.color-violet-dark { color: $violet-dark !important; }
+.color-violet-light { color: $violet-light !important; }
+
+.bg-violet { background-color: $violet !important; }
+.bg-violet-dark { background-color: $violet-dark !important; }
+.bg-violet-light { background-color: $violet-light !important; }
+
+.box-shadow { box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+.border-radius { border-radius: 5px; overflow: hidden; }
+
+.list-group-item {
+  a {
+    font-size: 14px;
+    font-weight: 500;
+    &.activated {
+      @extend .bg-violet-light;
+      @extend .color-violet;
+    }
+  }
+}
+
+.mobile-menu {
+  &-icon-active {
+    display: none;
+  }
+  &-active &-icon-active {
+    display: block;
+  }
+  &-active &-icon-inactive {
+    display: none;
+  }
+}
+
+.main-content {
+  transition: 0.2s ease-out;
+  transform: translateX(-100%);
+  @media(min-width: 480px) {
+    transform: translateX(-320px);
+  }
+  @media(min-width: 768px) {
+    transform: translateX(0);
+  }
+  .mobile-menu-active & {
+    transform: translateX(0);
+  }
+}
+
+.side-bar {
+  width: 100vw;
+  height: calc(100vh - 76px);
+  display: inline-block;
+  overflow-y: auto;
+  @media(min-width: 480px) {
+    width: 320px;
+  }
+  @media(min-width: 768px) {
+    width: auto;
+  }
+  .list-group-item {
+    background: none;
+  }
+}
+
+.app-container {
+  width: 100vw;
+  height: calc(100vh - 76px);
+  display: inline-block;
+  overflow-y: auto;
+  @media(min-width: 768px) {
+    width: calc(100vw - 309px);
+  }
+}
+
+.scrollbar {
+  padding-bottom: 20px;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+    &-track {
+      border-radius: 9999px;
+      transition: 0.2s;
+      &:hover {
+        background-color: #FCFCFC;
+      }
+    }
+    &-thumb {
+      background-color: #F4F4F4;
+      border-radius: 9999px;
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.dropdown-submenu {
+  position: relative;
+  > *[data-toggle="dropdown"]:after {
+    content: "\f0da";
+    float: right;
+    border: none;
+    font-family: 'FontAwesome';
+  }
+  > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+}
+
+.box-items {
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    height: calc(100% - 48px);
+    width: 200px;
+    background-image: linear-gradient(to right, transparent 0, white 120%);
+  }
+}
+
+.box-item {
+  &:not(:last-child) {
+    margin-right: 20px
+  }
+  &-img {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    img {
+      position: absolute;
+      top: -9999px;
+      bottom: -9999px;
+      left: -9999px;
+      right: -9999px;
+      margin: auto;
+      height: 100%;
+      max-width: none;
+      width: auto;
+    }
+    div {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background: rgba($violet-light, 0.9);
+      opacity: 0;
+      transition: 0.2s;
+      i {
+        color: #6200EE;
+        font-size: 40px;
+      }
+    }
+        &:hover {
+          div {
+            opacity: 1;
+          }
+        }
+  }
+  &-details {
+    width: 150px;
+    &-title {
+      line-height: 18px;
+    }
+  }
+}
+
+.tabs {
+  &-list {
+    padding: 0;
+    margin: 40px 0;
+    list-style-type: none;
+    text-align: center;
+  }
+  &-item {
+    display: inline-flex;
+    padding: 10px 75px;
+    transition: 0.1s;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    span {
+      margin-left: 10px;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+    &:hover {
+      background: rgba($violet-light, 0.5);
+    }
+    &.active {
+      color: $violet;
+      i {
+        font-family: 'Material Icons';
+      }
+      border-color: $violet;
+    }
+  }
+  &-content {
+    > div:not(.active) {
+      display: none;
+    }
+  }
+}

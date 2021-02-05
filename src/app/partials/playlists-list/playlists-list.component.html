@@ -1,0 +1,24 @@
+<div class="playlists-list box-items scrollbar d-flex mt-3">
+  <div *ngFor="let item of playlists" class="box-item">
+    <div class="box-item-img">
+      <div>
+        <a href="javascript:" (click)="playTrack(item.uri, null, null)"
+          class="position-relative w-100 h-100 d-flex align-items-center justify-content-center color-black">
+          <i class="material-icons-outlined">play_circle_filled</i>
+        </a>
+      </div>
+      <img src="{{ item?.images[0].url }}">
+    </div>
+    <div class="box-item-details">
+      <p class="box-item-details-title mt-3 mb-0">
+        <small><a class="color-black" [routerLink]="['/playlist', item.id]"><b>{{ item.name }}</b></a></small>
+      </p>
+      <p class="box-item-details-artists my-0 text-secondary">
+        <small><a class="text-secondary" href="{{ item.owner.external_urls.spotify }}" target="_blank">{{ item.owner.display_name }}</a></small>
+      </p>
+      <p class="box-item-details-artists my-0 text-secondary">
+        <small>{{ item.tracks.total }} Tracks</small>
+      </p>
+    </div>
+  </div>
+</div>

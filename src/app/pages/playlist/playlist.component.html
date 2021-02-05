@@ -1,0 +1,23 @@
+<div class="app-container pb-4">
+  <div *ngIf="playlist" class="px-4 pt-4">
+
+    <div class="playlist-header d-flex mb-4">
+      <div class="playlist-header-img">
+        <div class="border-radius bg-violet-light">
+          <img src="{{ playlist.images[0]?.url }}" alt="playlist thumbnail">
+        </div>
+      </div>
+      <div>
+        <p class="text-secondary mb-1"><small>PLAYLIST</small></p>
+        <h4>{{ playlist.name }}</h4>
+        <p class="mb-0">
+          <small>by: <a class="text-secondary" href="{{ playlist.owner.external_urls.spotify }}" target="_blank">{{ playlist.owner.display_name }}</a></small>
+          &middot; <small>{{ playlist.tracks.items.length }} songs</small>
+        </p>
+      </div>
+    </div>
+
+    <app-tracks-list [tracks]="playlist.tracks.items" [contextUri]="playlist.uri"></app-tracks-list>
+
+  </div>
+</div>
