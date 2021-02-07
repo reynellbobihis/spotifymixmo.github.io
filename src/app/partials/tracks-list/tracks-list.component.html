@@ -2,7 +2,7 @@
   <table class="tracklist-desktop d-none d-md-block table table-purple mb-0{{ class ? ' ' + class : '' }}">
     <thead>
       <tr>
-        <th class="track-checkbox">
+        <th class="track-checkbox" (click)="selectAllToggle($event)">
           <input type="checkbox">
           <i class="material-icons-outlined">done_all</i>
         </th>
@@ -38,7 +38,7 @@
         <td *ngIf="!hideAlbums"><a routerLink="/albums/{{ getItem(item).album?.id }}">{{ getItem(item).album?.name }}</a></td>
         <td *ngIf="tracks && getItem(tracks[0])?.popularity">{{ getItem(item)?.popularity }}</td>
         <td>{{ msToTime(getItem(item)?.duration_ms) }}</td>
-        <td *ngIf="!hideOptions" style="white-space: nowrap">
+        <td *ngIf="!hideOptions">
           <a *ngIf="searchIdFromFavorites(getItem(item)?.id); else notFavorite"
             class="mr-4" href="javascript:" (click)="removeTrack(getItem(item)?.id)"><i class="material-icons-outlined">favorite</i></a>
           <ng-template #notFavorite>

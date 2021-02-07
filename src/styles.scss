@@ -138,6 +138,10 @@ button,
   cursor: pointer;
 }
 
+.dropdown-menu {
+  max-width: calc(100vw - 10px);
+}
+
 .dropdown-submenu {
   position: relative;
   > *[data-toggle="dropdown"]:after {

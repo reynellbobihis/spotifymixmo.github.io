@@ -12,6 +12,7 @@ export class TracksListComponent implements OnInit {
   currentTrackId: any;
   favoriteTracks: any;
   justClicked = false;
+  isAllSelected = false;
   @Input() tracks: any[];
   @Input() contextUri: any;
   @Input() uris: any;
@@ -87,6 +88,20 @@ export class TracksListComponent implements OnInit {
         row.parentElement.parentElement.classList.remove('has-selection');
       }
     }
+  }
+
+  selectAllToggle(event) {
+    const table = event.target.closest('table');
+    const rows = table.querySelectorAll('tbody tr');
+    [ ...rows ].forEach(row => {
+      if (this.isAllSelected) row.classList.remove('checked');
+      else row.classList.add('checked');
+      const checkbox = row.querySelectorAll('.track-checkbox input[type=checkbox]')[0];
+      checkbox.checked = !this.isAllSelected;
+    });
+    if (this.isAllSelected) table.classList.remove('has-selection');
+    else table.classList.add('has-selection');
+    this.isAllSelected = !this.isAllSelected;
   }
 
   shareOnFacebook(link) {
