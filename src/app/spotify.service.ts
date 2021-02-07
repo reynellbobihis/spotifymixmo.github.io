@@ -221,9 +221,11 @@ export class SpotifyService {
       setInterval(() =>  {
         if (localStorage.getItem('token') !== null && localStorage.getItem('token') !== undefined) {
           setTimeout(() => {
-            const redirectUrl = localStorage.getItem('redirect');
-            if (redirectUrl) window.location.href = redirectUrl;
-            window.location.reload();
+            // TODO: Uncomment if deployed outside netlify
+            // const redirectUrl = localStorage.getItem('redirect');
+            // if (redirectUrl) window.location.href = redirectUrl;
+            // window.location.reload();
+            window.location.href = "/";
           }, 200);
         }
       }, 400);
