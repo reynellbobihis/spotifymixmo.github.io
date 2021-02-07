@@ -4,6 +4,8 @@ thead th, td, th {
     border-radius: 4px 0 0 4px;
   }
   &:last-child {
+    width: 1%;
+    white-space: nowrap;
     border-radius: 0 4px 4px 0;
   }
 }

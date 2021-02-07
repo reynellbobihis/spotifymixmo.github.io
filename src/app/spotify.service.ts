@@ -7,39 +7,38 @@ import { catchError, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class SpotifyService {
-  clientId = '0a085d9cc154415bb655ac4e345de658';
-  fragment = null;
-  scope = [
-    'user-read-private',
-    'user-read-email',
-    'user-top-read',
-    'user-library-read',
-    'user-library-modify',
-    'user-read-recently-played',
-    'user-read-currently-playing',
-    'user-read-playback-state',
-    'user-modify-playback-state',
-    'playlist-modify-public',
-    'playlist-modify-private'
-  ];
 
   constructor(private http: HttpClient) {
+    const clientId = '0a085d9cc154415bb655ac4e345de658';
+    const scope = [
+      'user-read-private',
+      'user-read-email',
+      'user-top-read',
+      'user-library-read',
+      'user-library-modify',
+      'user-read-recently-played',
+      'user-read-currently-playing',
+      'user-read-playback-state',
+      'user-modify-playback-state',
+      'playlist-modify-public',
+      'playlist-modify-private'
+    ];
     const baseElement: HTMLElement = document.querySelector('base');
     const redirectUri = baseElement.getAttribute('href').length > 0
-      ? baseElement.getAttribute('href') + '/'
-      : 'http://' + window.location.host + '/';
+      ? baseElement.getAttribute('href')
+      : 'http://' + window.location.host;
     const uri = 'https://accounts.spotify.com/authorize' +
-    '?client_id=' + this.clientId +
+    '?client_id=' + clientId +
     '&response_type=token' +
     '&redirect_uri=' + encodeURIComponent(redirectUri) +
-    '&scope=' + this.scope.join('%20');
+    '&scope=' + scope.join('%20');
     localStorage.setItem('spotifyUrlAuthorize', uri);
   }
 
   search(query: string, searchBy?: string, limit?: number, searchWhat?: string): Observable<any> {
     const spotifyEndpoint = 'https://api.spotify.com/v1/search' +
       '?q=' + (searchBy ? searchBy + ':' : '') + encodeURIComponent(query) +
-      '&type=' + encodeURIComponent(searchWhat ? searchWhat : 'track') +
+      '&type=' + encodeURIComponent(searchWhat || 'track') +
       (limit ? '&limit=' + limit : '');
     return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
   }
@@ -219,14 +218,15 @@ export class SpotifyService {
   getToken() {
     if ((localStorage.getItem('token') == null || localStorage.getItem('token') === undefined) &&
       localStorage.getItem('gettingthetoken') !== '1') {
-      const myVar = setInterval(() =>  {
+      setInterval(() =>  {
         if (localStorage.getItem('token') !== null && localStorage.getItem('token') !== undefined) {
           setTimeout(() => {
-            window.location.href = localStorage.getItem('redirect');
-            clearInterval(myVar);
-          }, 500);
+            const redirectUrl = localStorage.getItem('redirect');
+            if (redirectUrl) window.location.href = redirectUrl;
+            window.location.reload();
+          }, 200);
         }
-      }, 1000);
+      }, 400);
       localStorage.setItem('gettingthetoken', '1');
       window.open(localStorage.getItem('spotifyUrlAuthorize'), '_blank');
     }
