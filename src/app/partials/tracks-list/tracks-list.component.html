@@ -44,11 +44,11 @@
           <ng-template #notFavorite>
             <a class="mr-4" href="javascript:" (click)="savedTrack(getItem(item)?.id)"><i class="material-icons-outlined">favorite_border</i></a>
           </ng-template>
-          <span class="dropdown mr-5">
+          <span class="dropdown mr-4">
             <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="material-icons-outlined">share</i></a>
             <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-1" (click)="stopPropagation($event)">
-              <a class="dropdown-item" href="javascript:">
+              <a class="dropdown-item" href="javascript:" (click)="shareOnFacebook(getItem(item)?.external_urls.spotify)">
                 <small><i class="fa fa-facebook mr-2"></i>Facebook</small>
               </a>
               <a class="dropdown-item" href="javascript:">
@@ -82,7 +82,7 @@
     <div *ngFor="let item of tracks; index as i;"
       [class]="getItem(item)?.id == currentTrackId ? 'active-track' : ''"
       (click)="rowClick(contextUri, uris, getItem(item).uri); select($event);">
-      <pre>{{ item|json }}</pre>
+      <!-- <pre>{{ item|json }}</pre> -->
     </div>
   </div>
 </div>

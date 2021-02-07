@@ -193,7 +193,7 @@ export class HeaderComponent implements OnInit {
   }
 
   toggleIntegration() {
-    this.integration = this.integration ? false : true;
+    this.integration = !this.integration;
   }
 
   toggleMenu() {

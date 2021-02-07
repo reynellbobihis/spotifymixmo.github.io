@@ -89,6 +89,14 @@ export class TracksListComponent implements OnInit {
     }
   }
 
+  shareOnFacebook(link) {
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(link), 
+      'facebook-share-dialog', 
+      'width=626,height=436'); 
+    return false;
+  }
+
   stopPropagation(event) {
     event.stopPropagation();
   }

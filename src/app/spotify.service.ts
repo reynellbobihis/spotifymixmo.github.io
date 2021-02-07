@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders, HttpClient } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -249,12 +249,13 @@ export class SpotifyService {
             localStorage.setItem('popupsBlocked', '0');
           }
         } else {
-          console.log('Popups are being blocked!');
+          alert('Popups are being blocked!');
         }
       }
     } else if (localStorage.getItem('gettingthetoken') !== '1'
       && localStorage.getItem('popupsBlocked') !== '1'
       && (confirm('There has been an error.\nMessage: ' + err.message + '\nTry to reauthorize?'))) {
+      localStorage.clear();
       localStorage.setItem('redirect', window.location.href);
       const watchToken = setInterval(() => {
         if (localStorage.getItem('token') !== null && localStorage.getItem('token') !== undefined) {
@@ -273,7 +274,7 @@ export class SpotifyService {
           localStorage.setItem('popupsBlocked', '0');
         }
       } else {
-        console.log('Popups are being blocked!');
+        alert('Popups are being blocked!');
       }
     }
 
