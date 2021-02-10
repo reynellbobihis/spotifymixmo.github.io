@@ -19,7 +19,7 @@ export class SidebarComponent implements OnInit {
     this.spotifyService.getUserPlaylists(null, offset, 50).subscribe(result => {
       this.playlists = this.playlists ? this.playlists.concat(result.items) : result.items;
       if (result.items.length % 50 == 0) {
-        this.getUserPlaylists(offset + 50);
+        setTimeout(() => this.getUserPlaylists(offset + 50), 2000);
       }
     });
   }

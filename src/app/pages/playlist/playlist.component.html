@@ -2,7 +2,7 @@
   <div *ngIf="playlist" class="px-4 pt-4">
 
     <div class="playlist-header d-flex mb-4">
-      <div class="playlist-header-img">
+      <div *ngIf="playlist.images[0]?.url" class="playlist-header-img">
         <div class="border-radius bg-violet-light">
           <img src="{{ playlist.images[0]?.url }}" alt="playlist thumbnail">
         </div>

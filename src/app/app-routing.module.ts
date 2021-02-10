@@ -7,6 +7,7 @@ import { ArtistsComponent } from './pages/artists/artists.component';
 import { AlbumsComponent } from './pages/albums/albums.component';
 import { SpotifyTokenRedirectComponent } from './pages/spotify-token-redirect/spotify-token-redirect.component';
 import { PlaylistComponent } from './pages/playlist/playlist.component';
+import { PlaylistsComponent } from './pages/playlists/playlists.component';
 import { HistoryComponent } from './pages/history/history.component';
 import { ArtistComponent } from './pages/artist/artist.component';
 import { AlbumComponent } from './pages/album/album.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'artists/:id', component: ArtistComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'playlist/:id', component: PlaylistComponent, pathMatch: 'full' },
+  { path: 'playlists', component: PlaylistsComponent },
   { path: 'token', component: SpotifyTokenRedirectComponent },
   { path: '', component: SpotifyTokenRedirectComponent },
   { path: '**', redirectTo: 'discover' }

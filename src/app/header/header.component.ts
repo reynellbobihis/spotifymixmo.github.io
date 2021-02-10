@@ -40,7 +40,7 @@ export class HeaderComponent implements OnInit {
         }
         this.getUserSavedTracks(50);
       }
-    }, 2000);
+    }, 1000);
 
     // const dropdowns = document.querySelectorAll('.dropdown-menu [data-toggle="dropdown"]');
     // dropdowns.forEach(dropdown => {
@@ -57,7 +57,11 @@ export class HeaderComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(e: KeyboardEvent) {
     const event = e;
-    if (localStorage.getItem('searchFocused') !== '1' && (event.code === 'Space' || event.code === 'ArrowRight' || event.code === 'ArrowLeft' || event.code === 'Backspace')) {
+    const { tagName } = document.activeElement;
+    const inputs = ['input', 'select', 'button', 'textarea'];
+    const isInputActive = inputs.indexOf(tagName.toLowerCase()) == -1;
+
+    if (isInputActive && (event.code === 'Space' || event.code === 'ArrowRight' || event.code === 'ArrowLeft' || event.code === 'Backspace')) {
       event.preventDefault();
       this.spotifyService.getCurrentPlayback().subscribe(result => {
         this.playback = result;
@@ -82,10 +86,6 @@ export class HeaderComponent implements OnInit {
 
   searchSubmit(searchInput) {
     this.router.navigate(['/search/' + searchInput.value]);
-  }
-
-  setSearchFocused(state) {
-    localStorage.setItem('searchFocused', state);
   }
 
   getUserSavedTracks(limit: number) {

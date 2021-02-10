@@ -39,6 +39,12 @@ export class TracksListComponent implements OnInit {
     //     element.nextElementSibling.classList.toggle('show');
     //   });
     // });
+    window.oncontextmenu = (event: any) => {
+      const row = event.target.closest('app-tracks-list tbody tr');
+      if (row) {
+        // event.preventDefault();
+      }
+    }
   }
 
   playTrack(contextUri?: string, uris?: string[], offset?: string) {
@@ -57,36 +63,31 @@ export class TracksListComponent implements OnInit {
     return (item && item.track) ? item.track : item;
   }
 
-  rowClick(contextUri?: string, uris?: string[], offset?: string) {
-
-    if (this.justClicked === true) {
+  rowClick(event: any, contextUri?: string, uris?: string[], offset?: string) {
+    if (this.justClicked === true) { // double click
+      this.justClicked = false;
       this.playTrack(contextUri, uris, offset);
-      // console.log('two clicks');
     } else {
       this.justClicked = true;
-      setTimeout(() => {
+      setTimeout(() => { // single click
+        if (event.target.tagName === 'TD' && this.justClicked) {
+          const row = event.target.parentElement;
+          const checkbox = row.querySelectorAll('.track-checkbox input[type=checkbox]')[0];
+          if (checkbox.checked) {
+            row.classList.remove('checked');
+            checkbox.checked = false;
+          } else {
+            checkbox.checked = true;
+            row.classList.add('checked');
+          }
+          if (row.parentElement.querySelectorAll('tr.checked').length > 0) {
+            row.parentElement.parentElement.classList.add('has-selection');
+          } else {
+            row.parentElement.parentElement.classList.remove('has-selection');
+          }
+        }
         this.justClicked = false;
-      }, 300);
-    }
-
-  }
-
-  select(event) {
-    if (event.target.tagName === 'TD') {
-      const row = event.target.parentElement;
-      const checkbox = row.querySelectorAll('.track-checkbox input[type=checkbox]')[0];
-      if (checkbox.checked) {
-        row.classList.remove('checked');
-        checkbox.checked = false;
-      } else {
-        checkbox.checked = true;
-        row.classList.add('checked');
-      }
-      if (row.parentElement.querySelectorAll('tr.checked').length > 0) {
-        row.parentElement.parentElement.classList.add('has-selection');
-      } else {
-        row.parentElement.parentElement.classList.remove('has-selection');
-      }
+      }, 250);
     }
   }
 

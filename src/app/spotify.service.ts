@@ -53,9 +53,9 @@ export class SpotifyService {
     return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
   }
 
-  createPlaylist(name: string) {
+  createPlaylist(name: string, pub: boolean, description: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/playlists';
-    return this.http.post<any>(spotifyEndpoint, { name }, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.post<any>(spotifyEndpoint, { name, public: pub, description }, this.getOptions()).pipe( tap(), catchError(this.handleError) );
   }
 
   replaceTracksToPlaylist(id: string, uris: string[]) {

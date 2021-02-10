@@ -1,0 +1,43 @@
+<div class="app-container pb-4 position-relative">
+  <div class="floating-button p-5 position-absolute">
+    <button mat-fab color="primary" aria-label="Add a playlist" (click)="openAddPlaylistDialog(addPlaylistDialog)">
+      <mat-icon>playlist_add</mat-icon>
+    </button>
+    <ng-template #addPlaylistDialog>
+      <h1 mat-dialog-title>Add a Playlist</h1>
+      <div mat-dialog-content>
+        <p >
+          <mat-form-field appearance="outline" class="width-500 mw-100">
+            <mat-label>Name</mat-label>
+            <input [(ngModel)]="uploadForm.name" matInput placeholder="My Playlist" cdkFocusInitial>
+          </mat-form-field>
+        </p>
+        <p *ngIf="!progress.fileName">
+          <mat-form-field appearance="outline" class="width-500 mw-100">
+            <mat-label>Description</mat-label>
+            <textarea [(ngModel)]="uploadForm.description" rows="3" matInput placeholder="Description"></textarea>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="outline" class="width-500 mw-100">
+            <mat-label>Upload a local playlist file</mat-label>
+            <ngx-mat-file-input [(ngModel)]="uploadForm.file" matInput multiple></ngx-mat-file-input>
+          </mat-form-field>
+        </p>
+        <div *ngIf="progress.fileName">
+          <p>{{ progress.fileName }}: {{ progress.file }}%<mat-progress-bar mode="determinate" [value]="progress.file"></mat-progress-bar></p>
+          <p>Total: {{ progress.total }}%<mat-progress-bar mode="determinate" [value]="progress.total"></mat-progress-bar></p>
+        </div>
+      </div>
+      <mat-dialog-actions class="pb-4 float-right">
+        <button mat-flat-button mat-dialog-close>Cancel</button>
+        <button
+          [disabled]="!(uploadForm.name || uploadForm.file)"
+          (click)="newPlaylist()"
+          color="primary"
+          mat-flat-button
+        >Create</button>
+      </mat-dialog-actions>
+    </ng-template>
+  </div>
+</div>

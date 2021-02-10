@@ -20,6 +20,7 @@ import { AlbumsComponent } from './pages/albums/albums.component';
 import { ArtistsComponent } from './pages/artists/artists.component';
 import { DiscoverComponent } from './pages/discover/discover.component';
 import { PlaylistComponent } from './pages/playlist/playlist.component';
+import { PlaylistsComponent } from './pages/playlists/playlists.component';
 import { SongsComponent } from './pages/songs/songs.component';
 import { ArtistAlbumsComponent } from './partials/artist-albums/artist-albums.component';
 import { ArtistDetailsComponent } from './partials/artist-details/artist-details.component';
@@ -32,13 +33,34 @@ import { AlbumsListComponent } from './partials/albums-list/albums-list.componen
 import { PlaylistsListComponent } from './partials/playlists-list/playlists-list.component';
 import { ArtistsListComponent } from './partials/artists-list/artists-list.component';
 
+import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialFileInputModule } from 'ngx-material-file-input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatRippleModule} from '@angular/material/core';
+import {MatDividerModule} from '@angular/material';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+
 @NgModule({
-  imports:      [
+  imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    MaterialFileInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatRippleModule,
+    MatDividerModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressBarModule,
   ],
   declarations: [
     AppComponent,
@@ -53,6 +75,7 @@ import { ArtistsListComponent } from './partials/artists-list/artists-list.compo
     ArtistsComponent,
     DiscoverComponent,
     PlaylistComponent,
+    PlaylistsComponent,
     SongsComponent,
     ArtistAlbumsComponent,
     ArtistDetailsComponent,
@@ -65,7 +88,7 @@ import { ArtistsListComponent } from './partials/artists-list/artists-list.compo
     PlaylistsListComponent,
     ArtistsListComponent
   ],
-  bootstrap:    [ AppComponent ],
+  bootstrap: [ AppComponent ],
   providers: [
     SpotifyService,
     GlobalService
