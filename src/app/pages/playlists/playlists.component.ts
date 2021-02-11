@@ -19,7 +19,7 @@ export class PlaylistsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getUserPlaylists(0);
+    // this.getUserPlaylists(0);
   }
 
   newPlaylist(_fileIndex: number) {

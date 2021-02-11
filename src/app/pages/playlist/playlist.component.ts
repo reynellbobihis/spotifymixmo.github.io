@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SpotifyService } from '../../spotify.service';
-import { GlobalService } from '../../global.service';
 
 @Component({
   selector: 'app-playlist',
