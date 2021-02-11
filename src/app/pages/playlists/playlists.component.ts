@@ -85,7 +85,7 @@ export class PlaylistsComponent implements OnInit {
           if (length > ++fileIndex) {
             setTimeout(() => this.newPlaylist(fileIndex), 1000);
           } else {
-            console.log('Done All!');
+            console.log('All done!');
             setTimeout(() => {
               this.uploadForm = {};
               this.progress = {};

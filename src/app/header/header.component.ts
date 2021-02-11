@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit {
   tracksFromContext: any;
   delay: boolean;
   integration = true;
+  progressInterval: any;
 
   constructor(private spotifyService: SpotifyService, private globalService: GlobalService, private router: Router) { }
 
@@ -34,13 +35,19 @@ export class HeaderComponent implements OnInit {
       if (this.integration) {
         this.getCurrentPlayback();
         this.getDevices();
-        if (this.playback && this.playback.context && localStorage.getItem('playbackContextUri') !== this.playback.context.uri) {
-          this.getTracksFromContext();
-          localStorage.setItem('playbackContextUri', this.playback.context.uri);
+        if (this.playback && this.playback.context) {
+          if (localStorage.getItem('playbackContextUri') !== this.playback.context.uri) {
+            this.getTracksFromContext();
+            localStorage.setItem('playbackContextUri', this.playback.context.uri);
+          }
+        } else {
+          if (localStorage.getItem('playbackContextUri') !== this.playback.item.uri) {
+            localStorage.setItem('playbackContextUri', this.playback.item.uri);
+          }
         }
         this.getUserSavedTracks(50);
       }
-    }, 1000);
+    }, 2000);
 
     // const dropdowns = document.querySelectorAll('.dropdown-menu [data-toggle="dropdown"]');
     // dropdowns.forEach(dropdown => {
@@ -110,17 +117,26 @@ export class HeaderComponent implements OnInit {
   }
 
   getCurrentPlayback() {
+    clearInterval(this.progressInterval);
     this.spotifyService.getCurrentPlayback().subscribe(
       result => {
         console.log('getCurrentPlayback function is running in the header...');
         if (result && result.item) {
-          this.backgroundColor = 'linear-gradient(to right, white ' +
-            (result.progress_ms / result.item.duration_ms) * 100 + '%, #4C00D5 0%)';
           this.globalService.currentTrackId = result.item.id;
           this.playback = result;
+          this.setBgcolor();
+          this.progressInterval = setInterval(() => {
+            this.playback.progress_ms += 1000, 1000;
+            this.setBgcolor();
+          }, 1000);
         }
       }
     );
+  }
+
+  setBgcolor() {
+    this.backgroundColor = 'linear-gradient(to right, white ' +
+      (this.playback.progress_ms / this.playback.item.duration_ms) * 100 + '%, #4C00D5 0%)';
   }
 
   getDevices() {

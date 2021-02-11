@@ -18,7 +18,7 @@
     <tbody>
       <tr *ngFor="let item of tracks; index as i;"
         [class]="getItem(item)?.id == currentTrackId ? 'active-track' : ''"
-        (click)="rowClick($event, contextUri, uris, getItem(item).uri); select($event);">
+        (click)="rowClick($event, contextUri, uris, getItem(item).uri);">
         <td class="track-checkbox">
           <input type="checkbox">
           <i class="material-icons-outlined">done</i>
@@ -81,7 +81,7 @@
   <div class="tracklist-mobile">
     <div *ngFor="let item of tracks; index as i;"
       [class]="getItem(item)?.id == currentTrackId ? 'active-track' : ''"
-      (click)="rowClick(contextUri, uris, getItem(item).uri); select($event);">
+      (click)="rowClick($event, contextUri, uris, getItem(item).uri)">
       <!-- <pre>{{ item|json }}</pre> -->
     </div>
   </div>

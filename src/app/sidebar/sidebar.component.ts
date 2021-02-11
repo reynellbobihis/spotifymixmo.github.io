@@ -12,14 +12,14 @@ export class SidebarComponent implements OnInit {
   constructor(private spotifyService: SpotifyService) { }
 
   ngOnInit() {
-    this.getUserPlaylists(0);
+    this.getUserPlaylists();
   }
 
-  getUserPlaylists(offset) {
-    this.spotifyService.getUserPlaylists(null, offset, 50).subscribe(result => {
+  getUserPlaylists(offset?: number) {
+    this.spotifyService.getUserPlaylists(null, offset || 0, 50).subscribe(result => {
       this.playlists = this.playlists ? this.playlists.concat(result.items) : result.items;
       if (result.items.length % 50 == 0) {
-        setTimeout(() => this.getUserPlaylists(offset + 50), 2000);
+        // setTimeout(() => this.getUserPlaylists(offset + 50), 2000);
       }
     });
   }

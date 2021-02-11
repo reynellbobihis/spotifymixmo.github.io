@@ -18,8 +18,18 @@ export class ArtistAlbumsComponent implements OnInit {
 
   getArtistAlbums(artistId: string) {
     this.spotifyService.getArtistAlbums(artistId).subscribe(
-      result => { this.artistAlbums = result; }
+      result => {
+        const albums = [];
+        const titles = [];
+        result.items.forEach(album => {
+          if (!titles.includes(album.name)) albums.push(album);
+          titles.push(album.name);
+        });
+        this.artistAlbums = {
+          ...result,
+          items: albums,
+        };
+      }
     );
   }
-
 }

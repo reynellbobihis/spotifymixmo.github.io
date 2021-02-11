@@ -104,7 +104,7 @@
                 </app-tracks-list>
               </div>
               <h6 class="mx-4 mb-3 mt-4 pl-4"><small><b>Note:</b> Spotify does not allow to get the actual queue list.
-                This list is being fetched from the playback context.</small></h6>
+                List will only show if playing from a playlist or album.</small></h6>
             </div>
           </span>
 
@@ -139,6 +139,7 @@
             <a class="color-white d-flex align-items-center" href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <img [hidden]="!user?.images[0]" class="rounded-circle" src="{{ user?.images[0]?.url }}" width="35px" alt="">
               <i [hidden]="user?.images[0]" class="material-icons-outlined">person</i>
+              <i class="fa fa-spotify mr-2 d-none"><!-- Preload Font Awesome --></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-2" (click)="stopPropagation($event)">
               <h6 class="ml-4 mb-2"><small><b>{{ user?.display_name }}</b></small></h6>

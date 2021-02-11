@@ -18,9 +18,7 @@ export class AlbumComponent implements OnInit {
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
-      this.spotifyService.getAlbum(params.id).subscribe(
-        result => { this.album = result; console.log(result); }
-      );
+      this.spotifyService.getAlbum(params.id).subscribe(result => this.album = result);
       this.spotifyService.getAlbumTracks(params.id).subscribe(
         result => { this.albumTracks = result; }
       );
