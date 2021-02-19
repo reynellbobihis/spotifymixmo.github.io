@@ -1,6 +1,6 @@
 <div class="app-container pb-4 position-relative">
   <div class="floating-button p-5 position-absolute">
-    <!-- <button mat-fab color="primary" aria-label="Add a playlist" (click)="openAddPlaylistDialog(addPlaylistDialog)">
+    <button mat-fab color="primary" aria-label="Add a playlist" (click)="openAddPlaylistDialog(addPlaylistDialog)">
       <mat-icon>playlist_add</mat-icon>
     </button>
     <ng-template #addPlaylistDialog>
@@ -20,8 +20,11 @@
         </p>
         <p>
           <mat-form-field appearance="outline" class="width-500 mw-100">
-            <mat-label>Upload a local playlist file</mat-label>
-            <ngx-mat-file-input [(ngModel)]="uploadForm.file" matInput multiple></ngx-mat-file-input>
+            <mat-label>Playlist Files</mat-label>
+            <mat-chip-list>
+              <mat-chip *ngFor="let file of files">{{ file.name }}</mat-chip>
+            </mat-chip-list>
+            <input [(ngModel)]="uploadForm.file" type="file" class="fileInput" multiple (change)="fileInputChanged($event)">
           </mat-form-field>
         </p>
         <div *ngIf="progress.fileName">
@@ -38,6 +41,6 @@
           mat-flat-button
         >Create</button>
       </mat-dialog-actions>
-    </ng-template> -->
+    </ng-template>
   </div>
 </div>
