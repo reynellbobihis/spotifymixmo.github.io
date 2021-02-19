@@ -18,8 +18,7 @@
         <div class="d-flex player">
 
           <label class="search-box mb-0 p-0">
-            <input #searchInput name="search" ngModel required (input)="searchSubmit(searchInput)" (keyup.enter)="searchSubmit(searchInput)"
-              (blur)="setSearchFocused('0')" (focus)="setSearchFocused('1')">
+            <input #searchInput name="search" ngModel required (input)="searchSubmit(searchInput)" (keyup.enter)="searchSubmit(searchInput)">
             <i class="material-icons cursor-pointer">search</i>
           </label>
 
