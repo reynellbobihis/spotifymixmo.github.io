@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+// import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { SpotifyService } from 'src/app/spotify.service';
 
@@ -13,7 +13,7 @@ export class PlaylistsComponent implements OnInit {
   uploadForm: any;
   progress: any;
 
-  constructor(private dialog: MatDialog, private spotifyService: SpotifyService, private router: Router) {
+  constructor(/*private dialog: MatDialog, */private spotifyService: SpotifyService, private router: Router) {
     this.uploadForm = {};
     this.progress = {};
   }
@@ -119,7 +119,7 @@ export class PlaylistsComponent implements OnInit {
   }
 
   openAddPlaylistDialog(dialog: TemplateRef<any>) {
-    this.dialog.open(dialog);
+    // this.dialog.open(dialog);
   }
 
 }

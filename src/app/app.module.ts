@@ -33,16 +33,16 @@ import { AlbumsListComponent } from './partials/albums-list/albums-list.componen
 import { PlaylistsListComponent } from './partials/playlists-list/playlists-list.component';
 import { ArtistsListComponent } from './partials/artists-list/artists-list.component';
 
-import { ReactiveFormsModule } from '@angular/forms';
-import { MaterialFileInputModule } from 'ngx-material-file-input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatRippleModule} from '@angular/material/core';
-import {MatDividerModule} from '@angular/material';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+// import { ReactiveFormsModule } from '@angular/forms';
+// import { MaterialFileInputModule } from 'ngx-material-file-input';
+// import {MatButtonModule} from '@angular/material/button';
+// import {MatIconModule} from '@angular/material/icon';
+// import {MatRippleModule} from '@angular/material/core';
+// import {MatDividerModule} from '@angular/material';
+// import {MatDialogModule} from '@angular/material/dialog';
+// import {MatFormFieldModule} from '@angular/material/form-field';
+// import {MatInputModule} from '@angular/material/input';
+// import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   imports: [
@@ -50,17 +50,17 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MaterialFileInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatRippleModule,
-    MatDividerModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressBarModule,
+    // FormsModule,
+    // ReactiveFormsModule,
+    // MaterialFileInputModule,
+    // MatButtonModule,
+    // MatIconModule,
+    // MatRippleModule,
+    // MatDividerModule,
+    // MatDialogModule,
+    // MatFormFieldModule,
+    // MatInputModule,
+    // MatProgressBarModule,
   ],
   declarations: [
     AppComponent,
