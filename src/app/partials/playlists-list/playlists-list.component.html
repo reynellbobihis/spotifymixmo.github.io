@@ -7,13 +7,13 @@
           <i class="material-icons-outlined">play_circle_filled</i>
         </a>
       </div>
-      <img src="{{ item?.images[0].url }}">
+      <img *ngIf="item?.images.length" src="{{ item?.images[0].url }}">
     </div>
     <div class="box-item-details">
       <p class="box-item-details-title mt-3 mb-0">
         <small><a class="color-black" [routerLink]="['/playlist', item.id]"><b>{{ item.name }}</b></a></small>
       </p>
-      <p class="box-item-details-artists my-0 text-secondary">
+      <p *ngIf="!(hidden?.includes('owner'))" class="box-item-details-artists my-0 text-secondary">
         <small><a class="text-secondary" href="{{ item.owner.external_urls.spotify }}" target="_blank">{{ item.owner.display_name }}</a></small>
       </p>
       <p class="box-item-details-artists my-0 text-secondary">

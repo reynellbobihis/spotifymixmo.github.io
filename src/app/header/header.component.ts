@@ -22,30 +22,19 @@ export class HeaderComponent implements OnInit {
   constructor(private spotifyService: SpotifyService, private globalService: GlobalService, private router: Router) { }
 
   ngOnInit() {
-
     localStorage.setItem('gettingthetoken', '0');
     this.getUser();
     this.getCurrentPlayback();
     this.getDevices();
     this.getTracksFromContext();
     this.getUserSavedTracks(50);
-    localStorage.setItem('playbackContextUri', '');
 
     setInterval(() =>  {
       if (this.integration) {
-        this.getCurrentPlayback();
-        this.getDevices();
-        if (this.playback && this.playback.context) {
-          if (localStorage.getItem('playbackContextUri') !== this.playback.context.uri) {
-            this.getTracksFromContext();
-            localStorage.setItem('playbackContextUri', this.playback.context.uri);
-          }
-        } else {
-          if (localStorage.getItem('playbackContextUri') !== this.playback.item.uri) {
-            localStorage.setItem('playbackContextUri', this.playback.item.uri);
-          }
-        }
-        this.getUserSavedTracks(50);
+        const isDevicesShown = document.getElementById('devicesDropdown').classList.contains('show');
+        if (isDevicesShown) this.getDevices();
+        setTimeout(() => this.getCurrentPlayback(), 330);
+        setTimeout(() => this.getUserSavedTracks(50), 660);
       }
     }, 2000);
 
@@ -97,7 +86,7 @@ export class HeaderComponent implements OnInit {
 
   getUserSavedTracks(limit: number) {
     this.spotifyService.getUserSavedTracks(limit).subscribe(
-      result => { this.globalService.favoriteTracks = JSON.stringify(result.items.map(a => a.track.id)); }
+      result => { this.globalService.favoriteTracks = result.items; }
     );
   }
 
@@ -124,6 +113,8 @@ export class HeaderComponent implements OnInit {
         if (result && result.item) {
           this.globalService.currentTrackId = result.item.id;
           this.playback = result;
+          this.globalService.playback = result;
+          if (!this.playback || this.playback.context.uri !== result.context.uri) this.getTracksFromContext();
           this.setBgcolor();
           this.progressInterval = setInterval(() => {
             this.playback.progress_ms += 1000, 1000;
@@ -142,15 +133,14 @@ export class HeaderComponent implements OnInit {
   getDevices() {
     this.spotifyService.getDevices().subscribe(
       result => {
-        if (result.devices.length > 0) {
-          localStorage.setItem('hasDevices', '1');
+        const hasDevices = result.devices.length > 0;
+        if (hasDevices) {
           this.devices = result.devices;
           this.hasActiveDevice = false;
           this.devices.forEach(device => { if (device.is_active === true) { this.hasActiveDevice = true; } });
           if (this.hasActiveDevice === false) { this.playToDevice(this.devices[0].id, true); }
-        } else {
-          localStorage.setItem('hasDevices', '0');
         }
+        this.globalService.hasDevices = hasDevices;
       }
     );
   }

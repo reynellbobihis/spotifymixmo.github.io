@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SpotifyService } from '../../spotify.service';
+import { GlobalService } from 'src/app/global.service';
 
 @Component({
   selector: 'app-songs',
@@ -10,21 +10,13 @@ export class SongsComponent implements OnInit {
   favoriteTracks: any;
   uris: any[];
 
-  constructor(private spotifyService: SpotifyService) { }
+  constructor(private globalService: GlobalService) { }
 
   ngOnInit() {
-    this.getUserSavedTracks(30);
-  }
-
-  getUserSavedTracks(limit: number) {
-    this.spotifyService.getUserSavedTracks(limit).subscribe(
-      result => {
-        this.favoriteTracks = result;
-        const newArray = [];
-        result.items.forEach(item => { newArray.push(item.track.uri); });
-        this.uris = newArray;
+    setInterval(() => {
+      if (JSON.stringify(this.favoriteTracks) !== JSON.stringify(this.globalService.favoriteTracks)) {
+        this.favoriteTracks = this.globalService.favoriteTracks;
       }
-    );
+    }, 500);
   }
-
 }

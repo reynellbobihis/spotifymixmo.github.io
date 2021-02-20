@@ -55,7 +55,7 @@
             </div>
           </span>
 
-          <span class="dropdown">
+          <span id="devicesDropdown" class="dropdown">
             <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="text-white material-icons-outlined">devices</i></a>
             <div class="dropdown-menu dropdown-menu-right mt-2 py-4" (click)="stopPropagation($event)">
@@ -83,7 +83,7 @@
               <a class="dropdown-item pr-5" href="https://open.spotify.com" target="_blank">
                 <small class="device">
                   <i class="material-icons-outlined mr-1">public</i>
-                  Spotify Web Player
+                  Open Web Player
                 </small>
               </a>
             </div>
@@ -94,6 +94,7 @@
             <div class="dropdown-menu dropdown-menu-right mt-2 py-3" (click)="stopPropagation($event)">
               <h6 *ngIf="playback?.context" class="mx-4 mb-3 mt-2 pl-3"><small>Playing from {{ playback?.context.type }}.<b></b></small></h6>
               <div class="mx-4 pr-4 pb-0 scrollbar" style="max-height: calc(100vh - 160px)">
+                <pre>{{ playback|json }}</pre>
                 <app-tracks-list
                   [tracks]="playback?.context ? tracksFromContext : [playback?.item]"
                   [uris]="playback?.context ? null : [playback?.item]"

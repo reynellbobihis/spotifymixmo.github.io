@@ -1,5 +1,12 @@
-<div class="app-container pb-4 position-relative">
-  <div class="floating-button p-5 position-absolute">
+<div class="app-container pb-4">
+
+  <div class="px-4 pt-4">
+    <h6>Public Playlists</h6>
+    <app-playlists-list [playlists]="playlists" [hidden]="['owner']"></app-playlists-list>
+    <pre>{{ playlists|json }}</pre>
+  </div>
+
+  <div class="floating-button p-5 position-fixed">
     <button mat-fab color="primary" aria-label="Add a playlist" (click)="openAddPlaylistDialog(addPlaylistDialog)">
       <mat-icon>playlist_add</mat-icon>
     </button>
@@ -43,4 +50,5 @@
       </mat-dialog-actions>
     </ng-template>
   </div>
+
 </div>

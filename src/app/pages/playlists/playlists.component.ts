@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GlobalService } from 'src/app/global.service';
 import { SpotifyService } from 'src/app/spotify.service';
 
 @Component({
@@ -15,14 +16,18 @@ export class PlaylistsComponent implements OnInit {
   files = [];
   dialogRef: any;
 
-  constructor(private dialog: MatDialog, private spotifyService: SpotifyService, private router: Router) {
+  constructor(private dialog: MatDialog, private spotifyService: SpotifyService, private router: Router, private globalService: GlobalService) {
     this.uploadForm = {};
     this.progress = {};
     this.progress.total = 0;
   }
 
   ngOnInit() {
-    // this.getUserPlaylists(0);
+    setInterval(() => {
+      if (JSON.stringify(this.playlists) !== JSON.stringify(this.globalService.playlists)) {
+        this.playlists = this.globalService.playlists;
+      }
+    }, 500);
   }
 
   fileInputChanged(e) {
@@ -126,15 +131,6 @@ export class PlaylistsComponent implements OnInit {
         else this.search(queries, size, index, uris, fileIndex);
       }
     );
-  }
-
-  getUserPlaylists(offset) {
-    this.spotifyService.getUserPlaylists(null, offset, 50).subscribe(result => {
-      this.playlists = this.playlists ? this.playlists.concat(result.items) : result.items;
-      if (result.items.length % 50 == 0) {
-        setTimeout(() => this.getUserPlaylists(offset + 50), 2000);
-      }
-    });
   }
 
   openAddPlaylistDialog(dialog: TemplateRef<any>) {

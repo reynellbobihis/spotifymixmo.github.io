@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders, HttpClient } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { GlobalService } from './global.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpotifyService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private globalService: GlobalService) {
     const clientId = '0a085d9cc154415bb655ac4e345de658';
     const scope = [
       'user-read-private',
@@ -226,9 +227,9 @@ export class SpotifyService {
             // if (redirectUrl) window.location.href = redirectUrl;
             // window.location.reload();
             window.location.href = "/";
-          }, 200);
+          }, 500);
         }
-      }, 400);
+      }, 1000);
       localStorage.setItem('gettingthetoken', '1');
       window.open(localStorage.getItem('spotifyUrlAuthorize'), '_blank');
     }
@@ -240,7 +241,7 @@ export class SpotifyService {
       `An error occurred: ${err.error.message}` :
       `Server returned code: ${err.status}, error message is: ${err.message}`;
 
-    if (localStorage.getItem('hasDevices') !== '1' && err.status == 404) {
+    if (!this.globalService.hasDevices && err.status == 404) {
       if (localStorage.getItem('popupsBlocked') !== '1'
         && confirm('No available devices to play to. Open spotify online?\nError message: ' + err.message)) {
         if (localStorage.getItem('popupsBlocked') !== '0') {

@@ -10,7 +10,7 @@ import { SpotifyService } from '../../spotify.service';
 export class PlaylistComponent implements OnInit {
   playlist: any;
   playlistTracks: any[];
-  currentTrackId: any;
+  currentTrackId: string;
 
   constructor(private activatedRoute: ActivatedRoute, private spotifyService: SpotifyService) { }
 

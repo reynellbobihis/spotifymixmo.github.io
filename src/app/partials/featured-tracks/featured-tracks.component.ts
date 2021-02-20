@@ -9,15 +9,16 @@ import { GlobalService } from '../../global.service';
 })
 export class FeaturedTracksComponent implements OnInit {
   featuredTracks: any;
-  currentTrackId: any;
+  currentTrackId: string;
   uris: any[];
 
   constructor(private spotifyService: SpotifyService, private globalService: GlobalService) { }
 
   ngOnInit() {
-    this.globalService.currentTrackIdValue.subscribe(
-      result => { this.currentTrackId = result; }
-    );
+    setInterval(() => {
+      this.currentTrackId = this.globalService.currentTrackId;
+    }, 500);
+
     this.spotifyService.getUserTopTracks(30, 'short_term').subscribe(
       result => {
         this.featuredTracks = result.items;

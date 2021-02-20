@@ -9,7 +9,7 @@ import { GlobalService } from '../../global.service';
 })
 export class TracksListComponent implements OnInit {
   playlist: any;
-  currentTrackId: any;
+  currentTrackId: string;
   favoriteTracks: any;
   justClicked = false;
   isAllSelected = false;
@@ -24,12 +24,11 @@ export class TracksListComponent implements OnInit {
   constructor(private spotifyService: SpotifyService, private globalService: GlobalService) { }
 
   ngOnInit() {
-    this.globalService.currentTrackIdValue.subscribe(
-      result => { this.currentTrackId = result; }
-    );
-    this.globalService.favoriteTracksValue.subscribe(
-      result => { this.favoriteTracks = result; }
-    );
+    setInterval(() => {
+      this.currentTrackId = this.globalService.currentTrackId;
+      this.favoriteTracks = this.globalService.favoriteTracks;
+    }, 500);
+
     // const dropdowns = document.querySelectorAll('.dropdown-menu [data-toggle="dropdown"]');
     // dropdowns.forEach(dropdown => {
     //   dropdown.addEventListener('click', event => {
@@ -117,8 +116,8 @@ export class TracksListComponent implements OnInit {
     event.stopPropagation();
   }
 
-  searchIdFromFavorites(id: number): boolean {
-    return (this.favoriteTracks && this.favoriteTracks.indexOf('"' + id + '"') >= 0);
+  searchIdFromFavorites(id: string): boolean {
+    return (this.favoriteTracks && JSON.stringify(this.favoriteTracks).indexOf(id) >= 0);
   }
 
   savedTrack(id: string) {
