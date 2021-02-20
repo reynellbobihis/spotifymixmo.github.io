@@ -9,6 +9,7 @@ import { SpotifyService } from '../../spotify.service';
 export class PlaylistsListComponent implements OnInit {
   @Input() playlists: any[];
   @Input() hidden: string[];
+  @Input() options: any;
 
   constructor(private spotifyService: SpotifyService) { }
 

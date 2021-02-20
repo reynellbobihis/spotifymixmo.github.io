@@ -10,7 +10,6 @@ import { SpotifyService } from '../../spotify.service';
 export class AlbumComponent implements OnInit {
   album: any;
   albumTracks: any;
-  currentTrackId: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,

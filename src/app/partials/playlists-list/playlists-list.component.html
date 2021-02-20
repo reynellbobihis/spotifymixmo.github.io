@@ -1,4 +1,4 @@
-<div class="playlists-list box-items scrollbar d-flex mt-3">
+<div class="playlists-list box-items scrollbar d-flex mt-3{{ options && options.rows ? ' rows-' + options.rows : '' }}">
   <div *ngFor="let item of playlists" class="box-item">
     <div class="box-item-img">
       <div>
@@ -7,7 +7,8 @@
           <i class="material-icons-outlined">play_circle_filled</i>
         </a>
       </div>
-      <img *ngIf="item?.images.length" src="{{ item?.images[0].url }}">
+      <img *ngIf="item?.images[1]; else fallback" src="{{ item?.images[1].url }}">
+      <ng-template #fallback><img *ngIf="item?.images[0]" src="{{ item?.images[0].url }}"></ng-template>
     </div>
     <div class="box-item-details">
       <p class="box-item-details-title mt-3 mb-0">

@@ -100,6 +100,12 @@ export class SpotifyService {
     return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
   }
 
+  getFeaturedPlaylists(limit?: number) {
+    const spotifyEndpoint = 'https://api.spotify.com/v1/browse/featured-playlists' +
+      (limit ? '?limit=' + limit : '');
+    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+  }
+
   getUser(id?: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/' + (id ? 'users/' + id : 'me');
     return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
@@ -241,7 +247,7 @@ export class SpotifyService {
       `An error occurred: ${err.error.message}` :
       `Server returned code: ${err.status}, error message is: ${err.message}`;
 
-    if (!this.globalService.hasDevices && err.status == 404) {
+    if (this.globalService && !this.globalService.hasDevices && err.status == 404) {
       if (localStorage.getItem('popupsBlocked') !== '1'
         && confirm('No available devices to play to. Open spotify online?\nError message: ' + err.message)) {
         if (localStorage.getItem('popupsBlocked') !== '0') {

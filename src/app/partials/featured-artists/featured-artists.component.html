@@ -2,9 +2,9 @@
   <div class="featured-artists scrollbar d-flex">
     <div *ngFor="let item of topArtists?.items; index as i; let odd = odd" [class]="i == 0 ? 'featured-artists-main' : ''">
       <div *ngIf="i == 0; else notFirst" class="featured-artists-item m-0">
-        <img src="{{ item.images[0].url }}" alt="">
+        <img src="{{ item.images[0].url }}" alt="{{ item.name }}">
         <div class="featured-artists-details color-white d-flex align-items-center py-3 w-100">
-          <img class="rounded-circle mx-4" width="100px" height="100px" src="{{ item.images[0].url }}" alt="">
+          <img class="rounded-circle mx-4" width="100px" height="100px" src="{{ item.images[1].url }}" alt="{{ item.name }}">
           <div class="mr-4">
             <h2 class="featured-artists-details-name mt-3">
               <a [routerLink]="['/artists', item.id]" class="font-weight-400 color-white">{{ item.name }}</a>
@@ -29,9 +29,9 @@
       <ng-template #notFirst>
         <div *ngIf="odd">
           <div class="featured-artists-item cursor-pointer" [routerLink]="['/artists', item.id]">
-            <img src="{{ item.images[0].url }}" alt="">
+            <img src="{{ item.images[1].url }}" alt="{{ item.name }}">
             <div class="featured-artists-details color-white d-flex align-items-center py-3 w-100">
-              <img class="rounded-circle ml-4 mr-3" width="60px" height="60px" src="{{ item.images[0].url }}" alt="">
+              <img class="rounded-circle ml-4 mr-3" width="60px" height="60px" src="{{ item.images[1].url }}" alt="{{ item.name }}">
               <div class="mr-2">
                 <h5 class="featured-artists-details-name font-weight-500 mb-0">{{ item.name }}</h5>
                 <p class="mb-0"><small class="font-weight-400">{{ item.genres.join(', ') | titlecase }}</small></p>
@@ -40,9 +40,9 @@
           </div>
           <div *ngIf="topArtists?.items[i + 1]" class="featured-artists-item cursor-pointer"
             [routerLink]="['/artists', topArtists?.items[i + 1].id]">
-            <img src="{{ topArtists?.items[i + 1].images[0].url }}" alt="">
+            <img src="{{ topArtists?.items[i + 1].images[1].url }}" alt="">
             <div class="featured-artists-details color-white d-flex align-items-center py-3 w-100">
-              <img class="rounded-circle ml-4 mr-3" width="60px" height="60px" src="{{ topArtists?.items[i + 1].images[0].url }}" alt="">
+              <img class="rounded-circle ml-4 mr-3" width="60px" height="60px" src="{{ topArtists?.items[i + 1].images[2].url }}" alt="">
               <div class="mr-2">
                 <h5 class="featured-artists-details-name font-weight-500 mb-0">{{ topArtists?.items[i + 1].name }}</h5>
                 <p class="mb-0"><small class="font-weight-400">{{ topArtists?.items[i + 1].genres.join(', ') | titlecase }}</small></p>

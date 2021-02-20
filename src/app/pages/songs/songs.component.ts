@@ -8,14 +8,16 @@ import { GlobalService } from 'src/app/global.service';
 })
 export class SongsComponent implements OnInit {
   favoriteTracks: any;
-  uris: any[];
+  uris: string[];
 
   constructor(private globalService: GlobalService) { }
 
   ngOnInit() {
     setInterval(() => {
       if (JSON.stringify(this.favoriteTracks) !== JSON.stringify(this.globalService.favoriteTracks)) {
+        this.uris = [];
         this.favoriteTracks = this.globalService.favoriteTracks;
+        this.favoriteTracks.map(item => this.uris.push(item.track.uri));
       }
     }, 500);
   }

@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class GlobalService {
-  private _currentTrackId: string;
   private _favoriteTracks: any;
   private _hasDevices: boolean;
   private _playback: any;
@@ -12,9 +11,6 @@ export class GlobalService {
   private _refreshList: string[];
 
   constructor() { }
-
-  set currentTrackId(val) { this._currentTrackId = val; }
-  get currentTrackId() { return this._currentTrackId; }
 
   set favoriteTracks(val) { this._favoriteTracks = val; }
   get favoriteTracks() { return this._favoriteTracks; }

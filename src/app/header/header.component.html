@@ -94,7 +94,7 @@
             <div class="dropdown-menu dropdown-menu-right mt-2 py-3" (click)="stopPropagation($event)">
               <h6 *ngIf="playback?.context" class="mx-4 mb-3 mt-2 pl-3"><small>Playing from {{ playback?.context.type }}.<b></b></small></h6>
               <div class="mx-4 pr-4 pb-0 scrollbar" style="max-height: calc(100vh - 160px)">
-                <pre>{{ playback|json }}</pre>
+                <!-- <pre>{{ playback|json }}</pre> -->
                 <app-tracks-list
                   [tracks]="playback?.context ? tracksFromContext : [playback?.item]"
                   [uris]="playback?.context ? null : [playback?.item]"
@@ -113,7 +113,7 @@
       <div class="col-md-5 col-lg-4 bg-violet-dark" style="height: 76px;">
         <div class="playing-track playing-track-null" [class]="playback ? 'playing-track' : 'playing-track playing-track-null'">
           <div class="playing-track-img ml-2 mr-3">
-            <img *ngIf="playback?.item.album.images[0].url" src="{{ playback?.item.album.images[0].url }}" alt="">
+            <img *ngIf="playback?.item.album.images[2].url" src="{{ playback?.item.album.images[2].url }}" alt="">
             <i [hidden]="playback" class="material-icons-outlined">play_circle_filled</i>
           </div>
           <div class="playing-track-details text-white">

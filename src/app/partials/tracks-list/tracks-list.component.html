@@ -56,23 +56,16 @@
               </a>
             </div>
           </span>
-          <span class="dropdown">
-            <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="material-icons-outlined">more_vert</i></a>
-            <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-1" (click)="stopPropagation($event)">
-              <a class="dropdown-item" href="javascript:"><small>Add to queue</small></a>
-              <a class="dropdown-item" href="javascript:">
-                <small class="dropdown-toggle" data-toggle="dropdown">Add to Playlist</small>
-                <ul class="dropdown-menu border-0 shadow">
-                  <li><a href="#" class="dropdown-item">level 2</a></li>
-                  <li><a href="#" class="dropdown-item">level 2</a></li>
-                </ul>
-              </a>
-              <a class="dropdown-item" href="javascript:"><small>Go to song radio</small></a>
-              <a class="dropdown-item" [routerLink]="['/artists', getItem(item)?.artists[0]?.id]"><small>Go to artist</small></a>
-              <a class="dropdown-item" *ngIf="getItem(item)?.album" [routerLink]="['/albums', getItem(item)?.album?.id]"><small>Go to album</small></a>
-              <a class="dropdown-item" href="javascript:"><small>Show credits</small></a>
-            </div>
+          <span>
+            <i #trackMenuTrigger [matMenuTriggerFor]="trackMenu" class="cursor-pointer material-icons-outlined">more_vert</i>
+            <mat-menu #trackMenu="matMenu" class="trackMenu">
+              <button mat-menu-item>Add to queue</button>
+              <button mat-menu-item>Add to a playlist</button>
+              <button mat-menu-item>Go to song radio</button>
+              <button mat-menu-item [routerLink]="['/artists', getItem(item)?.artists[0]?.id]">Go to artist</button>
+              <button mat-menu-item *ngIf="getItem(item)?.album" [routerLink]="['/albums', getItem(item)?.album?.id]">Go to album</button>
+              <button mat-menu-item>Show credits</button>
+            </mat-menu>
           </span>
         </td>
       </tr>

@@ -3,6 +3,11 @@
   &::after {
     content: initial;
   }
+  &.rows {
+    &-1 {
+      flex-wrap: initial;
+    }
+  }
 }
 .box-item {
   display: inline-block;

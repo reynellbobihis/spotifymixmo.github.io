@@ -32,6 +32,7 @@ import { SearchComponent } from './pages/search/search.component';
 import { AlbumsListComponent } from './partials/albums-list/albums-list.component';
 import { PlaylistsListComponent } from './partials/playlists-list/playlists-list.component';
 import { ArtistsListComponent } from './partials/artists-list/artists-list.component';
+import { FeaturedPlaylistsComponent } from './partials/featured-playlists/featured-playlists.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,6 +42,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   imports: [
@@ -57,6 +59,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatInputModule,
     MatProgressBarModule,
     MatChipsModule,
+    MatMenuModule,
   ],
   declarations: [
     AppComponent,
@@ -82,7 +85,8 @@ import { MatChipsModule } from '@angular/material/chips';
     SearchComponent,
     AlbumsListComponent,
     PlaylistsListComponent,
-    ArtistsListComponent
+    ArtistsListComponent,
+    FeaturedPlaylistsComponent,
   ],
   bootstrap: [ AppComponent ],
   providers: [

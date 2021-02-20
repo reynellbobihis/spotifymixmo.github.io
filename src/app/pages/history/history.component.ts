@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { GlobalService } from 'src/app/global.service';
 import { SpotifyService } from '../../spotify.service';
 
 @Component({
@@ -11,20 +13,27 @@ export class HistoryComponent implements OnInit {
   uris: string[];
   currentTrack: any;
 
-  constructor(private spotifyService: SpotifyService) { }
+  constructor(private router: Router, private spotifyService: SpotifyService, private globalService: GlobalService) { }
 
   ngOnInit() {
-    this.getCurrentPlayback();
+    const { playback = {} } = this.globalService;
+    this.currentTrack = playback.item || false;
     this.getRecentlyPlayed();
     setInterval(() => {
-      this.getCurrentPlayback();
-      this.getRecentlyPlayed();
-    }, 3000);
+      const isInHistory = this.router.url === '/history';
+      const hasNoSelections = !document.querySelectorAll('app-tracks-list .has-selection').length;
+      const hasNoShownDropdowns = !document.querySelectorAll('.mat-menu-panel.trackMenu').length;
+      if (isInHistory && hasNoSelections && hasNoShownDropdowns) {
+        this.currentTrack = this.globalService.playback.item;
+        this.getRecentlyPlayed();
+      }
+    }, 2000);
   }
 
   getRecentlyPlayed() {
     this.spotifyService.getRecentlyPlayed(49).subscribe(
       result => {
+        console.log('getRecentlyPlayed method is running in recently played...');
         if (this.currentTrack) {
           result.items.unshift({ track: this.currentTrack });
         }
@@ -35,16 +44,4 @@ export class HistoryComponent implements OnInit {
       }
     );
   }
-
-  getCurrentPlayback() {
-    this.spotifyService.getCurrentPlayback().subscribe(
-      result => {
-        console.log('getCurrentPlayback function is running in recently played...');
-        if (result) {
-          this.currentTrack = result.item;
-        }
-      }
-    );
-  }
-
 }

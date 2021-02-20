@@ -10,7 +10,6 @@ import { SpotifyService } from '../../spotify.service';
 export class PlaylistComponent implements OnInit {
   playlist: any;
   playlistTracks: any[];
-  currentTrackId: string;
 
   constructor(private activatedRoute: ActivatedRoute, private spotifyService: SpotifyService) { }
 
@@ -18,19 +17,24 @@ export class PlaylistComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.playlist = null;
       this.spotifyService.getPlaylist(params.id).subscribe(
-        result => { this.playlist = result; console.log(result.tracks.items); }
+        result => {
+          this.playlist = result;
+          if (result.tracks.total > 100) this.getPlaylistTracks(params.id, 100);
+        }
       );
-      // this.getPlaylistTracks(params.id, 0);
     });
   }
 
-  // getPlaylistTracks(id, offset) {
-  //   this.spotifyService.getPlaylistTracks(id, offset).subscribe(result => {
-  //     this.playlistTracks = this.playlistTracks ? this.playlistTracks.concat(result.tracks.items) : result.items;
-  //     if (result.items.length % 100 == 0) {
-  //       this.getPlaylistTracks(id, offset + 100);
-  //     }
-  //   });
-  // }
+  getPlaylistTracks(id: string, offset: number) {
+    this.spotifyService.getPlaylistTracks(id, offset).subscribe(result => {
+      this.playlist.tracks.items = [
+        ...this.playlist.tracks.items,
+        ...result.items,
+      ];
+      if (this.playlist.tracks.items.length !== result.total) {
+        setTimeout(() => this.getPlaylistTracks(id, offset + 100), 200);
+      }
+    });
+  }
 
 }

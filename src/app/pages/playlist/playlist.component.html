@@ -2,9 +2,10 @@
   <div *ngIf="playlist" class="px-4 pt-4">
 
     <div class="playlist-header d-flex mb-4">
-      <div *ngIf="playlist.images[0]?.url" class="playlist-header-img">
+      <div *ngIf="playlist.images[0]" class="playlist-header-img">
         <div class="border-radius bg-violet-light">
-          <img src="{{ playlist.images[0]?.url }}" alt="playlist thumbnail">
+          <img *ngIf="playlist.images[1]; else fallback" src="{{ playlist.images[1]?.url }}" alt="playlist thumbnail">
+          <ng-template #fallback><img src="{{ playlist.images[0]?.url }}" alt="playlist thumbnail"></ng-template>
         </div>
       </div>
       <div>
@@ -12,7 +13,7 @@
         <h4>{{ playlist.name }}</h4>
         <p class="mb-0">
           <small>by: <a class="text-secondary" href="{{ playlist.owner.external_urls.spotify }}" target="_blank">{{ playlist.owner.display_name }}</a></small>
-          &middot; <small>{{ playlist.tracks.items.length }} songs</small>
+          &middot; <small>{{ playlist.tracks.total }} songs</small>
         </p>
       </div>
     </div>

@@ -1,9 +1,11 @@
 <div class="app-container pb-4">
 
+  <app-featured-playlists></app-featured-playlists>
+
   <div class="px-4 pt-4">
-    <h6>Public Playlists</h6>
-    <app-playlists-list [playlists]="playlists" [hidden]="['owner']"></app-playlists-list>
-    <pre>{{ playlists|json }}</pre>
+    <h6>Your Public Playlists</h6>
+    <app-playlists-list [playlists]="playlists" [hidden]="['owner']" [options]="{ rows: 1 }"></app-playlists-list>
+    <!-- <pre>{{ playlists|json }}</pre> -->
   </div>
 
   <div class="floating-button p-5 position-fixed">

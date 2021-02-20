@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
 import { SpotifyService } from '../../spotify.service';
 import { GlobalService } from '../../global.service';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-tracks-list',
@@ -13,6 +14,7 @@ export class TracksListComponent implements OnInit {
   favoriteTracks: any;
   justClicked = false;
   isAllSelected = false;
+  lastSelectionIndex = 0;
   @Input() tracks: any[];
   @Input() contextUri: any;
   @Input() uris: any;
@@ -20,34 +22,27 @@ export class TracksListComponent implements OnInit {
   @Input() hideArtists: any;
   @Input() hideOptions: any;
   @Input() class: any;
+  @ViewChildren(MatMenuTrigger) trackMenuTrigger: QueryList<MatMenuTrigger>;
 
   constructor(private spotifyService: SpotifyService, private globalService: GlobalService) { }
 
   ngOnInit() {
     setInterval(() => {
-      this.currentTrackId = this.globalService.currentTrackId;
+      this.currentTrackId = this.globalService.playback.item.id;
       this.favoriteTracks = this.globalService.favoriteTracks;
     }, 500);
 
-    // const dropdowns = document.querySelectorAll('.dropdown-menu [data-toggle="dropdown"]');
-    // dropdowns.forEach(dropdown => {
-    //   dropdown.addEventListener('click', event => {
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    //     const element = event.target as unknown as HTMLElement;
-    //     element.nextElementSibling.classList.toggle('show');
-    //   });
-    // });
     window.oncontextmenu = (event: any) => {
       const row = event.target.closest('app-tracks-list tbody tr');
       if (row) {
-        // event.preventDefault();
+        event.preventDefault();
+        this.trackMenuTrigger.toArray()[row.rowIndex - 1].openMenu();
       }
     }
   }
 
   playTrack(contextUri?: string, uris?: string[], offset?: string) {
-    // this.spotifyService.createPlaylist('$ _Playback').subscribe();
+    console.log('contextUri, uris, offset', contextUri, uris, offset);
     this.spotifyService.playTrack(contextUri, uris, offset).subscribe();
   }
 
@@ -63,30 +58,46 @@ export class TracksListComponent implements OnInit {
   }
 
   rowClick(event: any, contextUri?: string, uris?: string[], offset?: string) {
-    if (this.justClicked === true) { // double click
+    const { target, shiftKey } = event;
+    if (this.justClicked) { // double click
       this.justClicked = false;
       this.playTrack(contextUri, uris, offset);
     } else {
       this.justClicked = true;
       setTimeout(() => { // single click
-        if (event.target.tagName === 'TD' && this.justClicked) {
-          const row = event.target.parentElement;
-          const checkbox = row.querySelectorAll('.track-checkbox input[type=checkbox]')[0];
-          if (checkbox.checked) {
-            row.classList.remove('checked');
-            checkbox.checked = false;
-          } else {
-            checkbox.checked = true;
+        if (target.tagName === 'TD' && this.justClicked) {
+          const row = target.parentElement;
+          const table = row.parentElement.parentElement;
+          const checkbox = row.querySelector('.track-checkbox input');
+
+          if (checkbox.checked) row.classList.remove('checked');
+          else {
             row.classList.add('checked');
+            if (shiftKey) this.selectRows(table, this.lastSelectionIndex, row.rowIndex);
+            this.lastSelectionIndex = row.rowIndex;
           }
-          if (row.parentElement.querySelectorAll('tr.checked').length > 0) {
-            row.parentElement.parentElement.classList.add('has-selection');
-          } else {
-            row.parentElement.parentElement.classList.remove('has-selection');
-          }
+          checkbox.checked = !checkbox.checked;
+
+          this.refreshTable(table);
         }
         this.justClicked = false;
-      }, 250);
+      }, 200);
+    }
+  }
+
+  refreshTable(table: any) {
+    const { length } = table.querySelectorAll('tbody tr.checked');
+    if (length > 0) table.classList.add('has-selection');
+    else table.classList.remove('has-selection');
+  }
+
+  selectRows(table: any, fromIndex: number, toIndex?: number) {
+    const _fromIndex = Math.min(fromIndex, toIndex || fromIndex);
+    const _toIndex = Math.max(fromIndex, toIndex || fromIndex);
+
+    for (let index = _fromIndex; index <= _toIndex; index++) {
+      const row = table.querySelector(`tbody tr:nth-of-type(${index})`);
+      row.classList.add('checked');
     }
   }
 
@@ -96,7 +107,7 @@ export class TracksListComponent implements OnInit {
     [ ...rows ].forEach(row => {
       if (this.isAllSelected) row.classList.remove('checked');
       else row.classList.add('checked');
-      const checkbox = row.querySelectorAll('.track-checkbox input[type=checkbox]')[0];
+      const checkbox = row.querySelector('.track-checkbox input');
       checkbox.checked = !this.isAllSelected;
     });
     if (this.isAllSelected) table.classList.remove('has-selection');
