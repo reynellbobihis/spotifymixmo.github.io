@@ -92,8 +92,30 @@
             <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="text-white material-icons">queue_music</i></a>
             <div class="dropdown-menu dropdown-menu-right mt-2 py-3" (click)="stopPropagation($event)">
-              <h6 *ngIf="playback?.context" class="mx-4 mb-3 mt-2 pl-3"><small>Playing from {{ playback?.context.type }}.<b></b></small></h6>
-              <div class="mx-4 pr-4 pb-0 scrollbar" style="max-height: calc(100vh - 160px)">
+              <div *ngIf="contextDetails && playback?.context && playback?.context.type == 'album'" class="album-header d-flex mb-4 px-4">
+                <div class="album-header-img">
+                  <div class="border-radius">
+                    <img src="{{ contextDetails.images[1].url }}">
+                  </div>
+                </div>
+                <div>
+                  <p class="text-secondary mb-1"><small>ALBUM</small></p>
+                  <h4>{{ contextDetails.name }}</h4>
+                  <p class="mb-0">
+                    <small>by: <a class="text-secondary" routerLink="/artists/{{ contextDetails.artists[0]?.id }}">{{ contextDetails.artists[0]?.name }}</a></small>
+                    &middot; <small>{{ contextDetails.release_date|date:'MMM yyyy' }}</small> &middot; <small>{{ contextDetails.tracks.items.length }} song{{ contextDetails.tracks.items.length > 1 ? 's' : ''}}</small>
+                  </p>
+                </div>
+              </div>
+              <!-- <h6 *ngIf="playback?.context" class="mx-4 mb-3 mt-2 pl-3">
+                <small *ngIf="playback?.context.type == 'album'">
+                  Playing from <b>{{ contextDetails.name }}</b> by <b>{{ contextDetails.artists[0].name }}</b>
+                </small>
+                <small *ngIf="playback?.context.type == 'playlist'">
+                  Playing from playlist
+                </small>
+              </h6> -->
+              <div class="mx-4 pr-4 pb-0 scrollbar" style="max-height: calc(100vh - 230px)">
                 <!-- <pre>{{ playback|json }}</pre> -->
                 <app-tracks-list
                   [tracks]="playback?.context ? tracksFromContext : [playback?.item]"
@@ -102,6 +124,7 @@
                   [hideAlbums]="true"
                   [hideOptions]="true">
                 </app-tracks-list>
+                <!-- <pre>{{ contextDetails|json }}</pre> -->
               </div>
               <h6 class="mx-4 mb-3 mt-4 pl-4"><small><b>Note:</b> Spotify does not allow to get the actual queue list.
                 List will only show if playing from a playlist or album.</small></h6>
@@ -143,7 +166,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-2" (click)="stopPropagation($event)">
               <h6 class="ml-4 mb-2"><small><b>{{ user?.display_name }}</b></small></h6>
-              <a class="dropdown-item pr-5" href="javascript:" (click)="spotifyAuthorize()">
+              <a class="dropdown-item pr-5" href="{{ this.globalService.spotifyAuthUrl }}" target="_self">
                 <small class="device"><i class="fa fa-spotify mr-2"></i>ReAuthorize</small>
               </a>
               <a *ngIf="integration" class="dropdown-item" href="javascript:" (click)="toggleIntegration()">
@@ -160,7 +183,7 @@
                 <i class="material-icons-outlined">person</i>
               </a>
               <div class="dropdown-menu dropdown-menu-right mt-2 py-3 mr-2" (click)="stopPropagation($event)">
-                <a class="dropdown-item" href="javascript:" (click)="spotifyAuthorize()">
+                <a class="dropdown-item" href="{{ this.globalService.spotifyAuthUrl }}" target="_self">
                   <small class="device"><i class="fa fa-spotify mr-2"></i>Get Spotify Authorization</small>
                 </a>
               </div>

@@ -18,35 +18,31 @@ export class HeaderComponent implements OnInit {
   delay: boolean;
   integration = true;
   progressInterval: any;
+  contextDetails: any;
 
   constructor(private spotifyService: SpotifyService, private globalService: GlobalService, private router: Router) { }
 
   ngOnInit() {
     localStorage.setItem('gettingthetoken', '0');
+    localStorage.setItem('allowIntegration', '1');
+
     this.getUser();
     this.getDevices();
     this.getCurrentPlayback();
     this.getUserSavedTracks(50);
 
     setInterval(() =>  {
-      if (this.integration) {
-        const isDevicesShown = document.getElementById('devicesDropdown').classList.contains('show');
-        if (isDevicesShown) this.getDevices();
+      if (localStorage.getItem('allowIntegration') == '1') {
+        this.getDevices();
         setTimeout(() => this.getCurrentPlayback(), 330);
         setTimeout(() => this.getUserSavedTracks(50), 660);
       }
     }, 2000);
 
-    // const dropdowns = document.querySelectorAll('.dropdown-menu [data-toggle="dropdown"]');
-    // dropdowns.forEach(dropdown => {
-    //   dropdown.addEventListener('click', event => {
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    //     const element = event.target.nextSibling as unknown as HTMLElement;
-    //     element.classList.toggle('show');
-    //   });
-    // });
-
+    setInterval(() =>  {
+      const allow = localStorage.getItem('allowIntegration');
+      this.integration = allow == '1';
+    }, 500);
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -105,9 +101,12 @@ export class HeaderComponent implements OnInit {
           );
           break;
         case 'album':
-          this.spotifyService.getAlbumTracks(uri.split('album:', 2)[1]).subscribe(
-            result => this.tracksFromContext = result.items
-          );
+          this.spotifyService.getAlbum(uri.split('album:', 2)[1]).subscribe(result => {
+            this.contextDetails = result;
+            this.spotifyService.getAlbumTracks(uri.split('album:', 2)[1]).subscribe(
+              result => this.tracksFromContext = result.items
+            );
+          });
           break;
         default:
           break;
@@ -133,10 +132,14 @@ export class HeaderComponent implements OnInit {
           this.globalService.playback = result;
 
           this.setBgcolor();
-          this.progressInterval = setInterval(() => {
-            this.playback.progress_ms += 1000, 1000;
-            this.setBgcolor();
-          }, 1000);
+          if (result.is_playing) {
+            this.progressInterval = setInterval(() => {
+              this.playback.progress_ms += 1000, 1000;
+              this.setBgcolor();
+            }, 1000);
+          }
+        } else {
+          this.playback = undefined;
         }
       }
     );
@@ -151,15 +154,15 @@ export class HeaderComponent implements OnInit {
     this.spotifyService.getDevices().subscribe(
       result => {
         const hasDevices = result.devices.length > 0;
+        this.devices = result.devices;
+        this.globalService.hasDevices = hasDevices;
         if (hasDevices) {
-          this.devices = result.devices;
           this.hasActiveDevice = false;
           this.devices.forEach(device => {
             if (device.is_active) { this.hasActiveDevice = true; }
           });
           if (!this.hasActiveDevice) { this.playToDevice(this.devices[0].id, true); }
         }
-        this.globalService.hasDevices = hasDevices;
       }
     );
   }
@@ -209,16 +212,13 @@ export class HeaderComponent implements OnInit {
     return minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
   }
 
-  spotifyAuthorize() {
-    this.spotifyService.spotifyAuthorize();
-  }
-
   stopPropagation(event) {
     event.stopPropagation();
   }
 
   toggleIntegration() {
-    this.integration = !this.integration;
+    const allow = localStorage.getItem('allowIntegration');
+    localStorage.setItem('allowIntegration', allow == '1' ? '0' : '1');
   }
 
   toggleMenu() {

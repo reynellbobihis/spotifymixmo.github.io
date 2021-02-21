@@ -20,4 +20,10 @@ export class PlaylistsListComponent implements OnInit {
     this.spotifyService.playTrack(contextUri, uris, offset).subscribe();
   }
 
+  createArray(length: number) {
+    let newArr = [];
+    for (let index = 0; index < length; index++) newArr.push(index);
+    return newArr;
+  }
+
 }

@@ -28,7 +28,8 @@ export class TracksListComponent implements OnInit {
 
   ngOnInit() {
     setInterval(() => {
-      this.currentTrackId = this.globalService.playback.item.id;
+      const { playback } = this.globalService;
+      this.currentTrackId = playback ? playback.item.id : '';
       this.favoriteTracks = this.globalService.favoriteTracks;
     }, 500);
 

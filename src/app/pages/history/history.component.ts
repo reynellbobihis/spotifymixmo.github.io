@@ -16,15 +16,16 @@ export class HistoryComponent implements OnInit {
   constructor(private router: Router, private spotifyService: SpotifyService, private globalService: GlobalService) { }
 
   ngOnInit() {
-    const { playback = {} } = this.globalService;
-    this.currentTrack = playback.item || false;
+    const { playback } = this.globalService
+    this.currentTrack = playback ? playback.item : false;
     this.getRecentlyPlayed();
     setInterval(() => {
       const isInHistory = this.router.url === '/history';
       const hasNoSelections = !document.querySelectorAll('app-tracks-list .has-selection').length;
       const hasNoShownDropdowns = !document.querySelectorAll('.mat-menu-panel.trackMenu').length;
       if (isInHistory && hasNoSelections && hasNoShownDropdowns) {
-        this.currentTrack = this.globalService.playback.item;
+        const { playback } = this.globalService
+        this.currentTrack = playback ? playback.item : false;
         this.getRecentlyPlayed();
       }
     }, 2000);

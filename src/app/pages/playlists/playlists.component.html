@@ -3,8 +3,11 @@
   <app-featured-playlists></app-featured-playlists>
 
   <div class="px-4 pt-4">
-    <h6>Your Public Playlists</h6>
-    <app-playlists-list [playlists]="playlists" [hidden]="['owner']" [options]="{ rows: 1 }"></app-playlists-list>
+    <div class="d-flex align-items-end justify-content-between">
+      <h6>Your Public Playlists</h6>
+      <button mat-button class="float-right">Manage</button>
+    </div>
+    <app-playlists-list [playlists]="playlists" [hidden]="['owner']" [options]="{ rows: 2 }"></app-playlists-list>
     <!-- <pre>{{ playlists|json }}</pre> -->
   </div>
 

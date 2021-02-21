@@ -116,7 +116,7 @@ button,
 }
 
 .scrollbar {
-  padding-bottom: 20px;
+  padding-bottom: 15px;
   overflow: auto;
   &::-webkit-scrollbar {
     height: 10px;
@@ -180,6 +180,7 @@ button,
     position: relative;
     overflow: hidden;
     border-radius: 4px;
+    background-color: #F4F4F4;
     img {
       position: absolute;
       top: -9999px;

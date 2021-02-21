@@ -43,6 +43,14 @@
       }
     }
   }
+  .album-header {
+    &-img {
+      margin-right: 40px;
+      img {
+        width: 90px;
+      }
+    }
+  }
 }
 
 .search-box {

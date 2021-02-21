@@ -8,7 +8,7 @@ export class GlobalService {
   private _hasDevices: boolean;
   private _playback: any;
   private _playlists: any;
-  private _refreshList: string[];
+  private _spotifyAuthUrl: string;
 
   constructor() { }
 
@@ -24,7 +24,6 @@ export class GlobalService {
   set playlists(val) { this._playlists = val; }
   get playlists() { return this._playlists; }
 
-  set refreshList(val) { this._refreshList = val; }
-  get refreshList() { return this._refreshList; }
-
+  set spotifyAuthUrl(val) { this._spotifyAuthUrl = val; }
+  get spotifyAuthUrl() { return this._spotifyAuthUrl; }
 }

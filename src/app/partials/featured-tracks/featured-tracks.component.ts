@@ -16,12 +16,12 @@ export class FeaturedTracksComponent implements OnInit {
 
   ngOnInit() {
     setInterval(() => {
-      this.currentTrackId = this.globalService.playback.item.id;
+      const { playback } = this.globalService
+      this.currentTrackId = playback ? playback.item.id : '';
     }, 500);
 
     this.spotifyService.getUserTopTracks(30, 'short_term').subscribe(
       result => {
-        console.log(result.items);
         this.featuredTracks = result.items;
         const newArray = [];
         result.items.forEach(item => { newArray.push(item.uri); });

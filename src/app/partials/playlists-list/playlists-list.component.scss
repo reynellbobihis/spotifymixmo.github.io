@@ -1,5 +1,4 @@
 .box-items {
-  flex-wrap: wrap;
   &::after {
     content: initial;
   }
@@ -11,7 +10,6 @@
 }
 .box-item {
   display: inline-block;
-  margin-bottom: 30px;
   &-img {
     width: 200px;
     height: 200px;

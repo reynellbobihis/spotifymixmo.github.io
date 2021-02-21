@@ -90,8 +90,8 @@ import { MatMenuModule } from '@angular/material/menu';
   ],
   bootstrap: [ AppComponent ],
   providers: [
-    SpotifyService,
-    GlobalService
+    GlobalService,
+    SpotifyService
   ]
 })
 export class AppModule { }

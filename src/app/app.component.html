@@ -2,4 +2,32 @@
 <div class="main-content d-flex mt-1" (click)="closeMenu()">
   <app-sidebar></app-sidebar>
   <router-outlet></router-outlet>
+
+  <ng-template #errorUnknownDialogTemplate>
+    <h1 mat-dialog-title>There has been an error.</h1>
+    <div mat-dialog-content>
+      <p>{{ errorUnknownMessage }}</p>
+    </div>
+    <mat-dialog-actions class="pb-4 float-right">
+      <button mat-flat-button mat-dialog-close class="mr-3">Close</button>
+      <a href="{{ spotifyAuthUrl }}" target="_self" mat-dialog-close>
+        <button (click)="reauthorize()" mat-flat-button color="primary">Try to reauthorize</button>
+      </a>
+    </mat-dialog-actions>
+  </ng-template>
+
+  <ng-template #noDeviceDialogTemplate>
+    <h1 mat-dialog-title>No opened devices to play to.</h1>
+    <div mat-dialog-content>
+      <p>Spotify doesn't allow us to play your songs internally.</p>
+      <p>You can open spotify in background.</p>
+    </div>
+    <mat-dialog-actions class="pb-4 float-right">
+      <button mat-flat-button mat-dialog-close class="mr-3">Close</button>
+      <a href="https://open.spotify.com" target="_self" mat-dialog-close>
+        <button mat-flat-button color="primary">Open spotify web</button>
+      </a>
+    </mat-dialog-actions>
+  </ng-template>
+
 </div>

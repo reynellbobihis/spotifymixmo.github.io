@@ -33,185 +33,207 @@ export class SpotifyService {
     '&response_type=token' +
     '&redirect_uri=' + encodeURIComponent(redirectUri) +
     '&scope=' + scope.join('%20');
-    localStorage.setItem('spotifyUrlAuthorize', uri);
+    this.globalService.spotifyAuthUrl = uri;
   }
 
   search(query: string, searchBy?: string, limit?: number, searchWhat?: string): Observable<any> {
     const spotifyEndpoint = 'https://api.spotify.com/v1/search' +
       '?q=' + (searchBy ? searchBy + ':' : '') + encodeURIComponent(query) +
-      '&type=' + encodeURIComponent(searchWhat || 'track') +
-      (limit ? '&limit=' + limit : '');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+      '&type=' + encodeURIComponent(searchWhat || 'track') + '&limit=' + (limit || 50);
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getPlaylist(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/playlists/' + id;
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getPlaylistTracks(id: string, offset?: number) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/playlists/' + id + '/tracks' + (offset ? '?offset=' + offset : '');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    const spotifyEndpoint = 'https://api.spotify.com/v1/playlists/' + id + '/tracks' + '?offset=' + (offset || 0);
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   createPlaylist(name: string, pub: boolean, description: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/playlists';
-    return this.http.post<any>(spotifyEndpoint, { name, public: pub, description }, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.post<any>(spotifyEndpoint, { name, public: pub, description }, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   replaceTracksToPlaylist(id: string, uris: string[]) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/playlists/' + id + '/tracks';
-    return this.http.put<any>(spotifyEndpoint, { uris }, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, { uris }, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   addTracksToPlaylist(id: string, uris: string[], position?: number) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/playlists/' + id + '/tracks';
-    return this.http.post<any>(spotifyEndpoint, { uris, position }, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.post<any>(spotifyEndpoint, { uris, position }, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getArtist(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/artists/' + id;
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getArtistTopTracks(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/artists/' + id + '/top-tracks?country=PH';
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getArtistAlbums(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/artists/' + id + '/albums?market=PH';
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getAlbum(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/albums/' + id;
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getAlbumTracks(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/albums/' + id + '/tracks?limit=50';
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getNewReleases(limit?: number) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/browse/new-releases' +
-      (limit ? '?limit=' + limit : '');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    const spotifyEndpoint = 'https://api.spotify.com/v1/browse/new-releases?limit=' + (limit || 50);
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getFeaturedPlaylists(limit?: number) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/browse/featured-playlists' +
-      (limit ? '?limit=' + limit : '');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    const spotifyEndpoint = 'https://api.spotify.com/v1/browse/featured-playlists?limit=' + (limit || 50);
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getUser(id?: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/' + (id ? 'users/' + id : 'me');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getUserPlaylists(id?: string, offset?: number, limit?: number) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/' + (id ? 'users/' + id : 'me') + '/playlists?limit=' + (limit ? limit : 50) + '&offset=' + (offset ? offset : 0);
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    const spotifyEndpoint = 'https://api.spotify.com/v1/' + (id ? 'users/' + id : 'me')
+      + '/playlists?limit=' + (limit || 50)
+      + '&offset=' + (offset || 0);
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getUserTopTracks(limit?: number, timeRange?: string) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/me/top/tracks' +
-      (limit ? '?limit=' + limit : '') +
+    const spotifyEndpoint = 'https://api.spotify.com/v1/me/top/tracks?limit=' + (limit || 50) +
       (timeRange ? '&time_range=' + timeRange : '&time_range=long_term');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getUserTopArtists(limit?: number, timeRange?: string) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/me/top/artists' +
-      (limit ? '?limit=' + limit : '') +
+    const spotifyEndpoint = 'https://api.spotify.com/v1/me/top/artists?limit=' + (limit || 50) +
       (timeRange ? '&time_range=' + timeRange : '&time_range=long_term');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getUserSavedTracks(limit?: number) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/me/tracks' +
-      (limit ? '?limit=' + limit : '');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    const spotifyEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=' + (limit || 50);
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   savedTrack(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/tracks?ids=' + id;
-    return this.http.put<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   removeTrack(id: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/tracks?ids=' + id;
-    return this.http.delete<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.delete<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getRecentlyPlayed(limit?: number) {
-    const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/recently-played' +
-    (limit ? '?limit=' + limit : '');
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/recently-played?limit=' + (limit || 50);
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getCurrentPlayback() {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player';
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getDevices() {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/devices';
-    return this.http.get<any>(spotifyEndpoint, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.get<any>(spotifyEndpoint, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   playToDevice(deviceIds: string, transferOnly?: boolean) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player';
     const data = { device_ids: [deviceIds], play: (transferOnly === true ? false : true) };
-    return this.http.put<any>(spotifyEndpoint, data, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, data, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   playTrack(contextUri?: string, uris?: string[], offset?: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/play';
     const data = { context_uri: contextUri, uris, offset: (offset ? { uri: offset } : null) };
-    return this.http.put<any>(spotifyEndpoint, data, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, data, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   setRepeatMode(state: string) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/repeat?state=' + state;
-    return this.http.put<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   toggleShuffle(state: boolean) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/shuffle?state=' + state;
-    return this.http.put<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   skipToPreviousTrack() {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/previous';
-    return this.http.post<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.post<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   skipToNextTrack() {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/next';
-    return this.http.post<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.post<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   seek(position: number) {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/seek?position_ms=' + Math.floor(position);
-    return this.http.put<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   pausePlayback() {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/pause';
-    return this.http.put<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
+    return this.http.put<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   resumePlayback() {
     const spotifyEndpoint = 'https://api.spotify.com/v1/me/player/play';
-    return this.http.put<any>(spotifyEndpoint, null, this.getOptions()).pipe( tap(), catchError(this.handleError) );
-  }
-
-  spotifyAuthorize() {
-    localStorage.setItem('redirect', window.location.href);
-    window.open(localStorage.getItem('spotifyUrlAuthorize'), '_blank');
+    return this.http.put<any>(spotifyEndpoint, null, this.getOptions())
+      .pipe( tap(), catchError((err, caught) => this.handleError(err, caught)));
   }
 
   getOptions() {
@@ -223,69 +245,43 @@ export class SpotifyService {
   }
 
   getToken() {
-    if ((localStorage.getItem('token') == null || localStorage.getItem('token') === undefined) &&
-      localStorage.getItem('gettingthetoken') !== '1') {
-      setInterval(() =>  {
-        if (localStorage.getItem('token') !== null && localStorage.getItem('token') !== undefined) {
-          setTimeout(() => {
-            // TODO: Uncomment if deployed outside netlify
-            // const redirectUrl = localStorage.getItem('redirect');
-            // if (redirectUrl) window.location.href = redirectUrl;
-            // window.location.reload();
-            window.location.href = "/";
-          }, 500);
-        }
-      }, 1000);
-      localStorage.setItem('gettingthetoken', '1');
-      window.open(localStorage.getItem('spotifyUrlAuthorize'), '_blank');
+    const hasToken = !!localStorage.getItem('token');
+    const isGettingToken = localStorage.getItem('gettingthetoken') == '1';
+    if (hasToken) {
+      return localStorage.getItem('token');
+    } else if (!isGettingToken) {
+      setTimeout(() => {
+        localStorage.setItem('allowIntegration', '0');
+        const message = 'If this is your first time, click reauthorize to sign in with spotify.';
+        this.dispatch('openErrorUnknownDialog', { message });
+      }, 0);
+      return null;
     }
-    return localStorage.getItem('token');
   }
 
-  private handleError(err: HttpErrorResponse) {
+  watchToken() {
+    const watchToken = setInterval(() => {
+      if (localStorage.getItem('token')) {
+        window.location.reload();
+        clearInterval(watchToken);
+      }
+    }, 200);
+  }
+
+  dispatch(name: string, detail?: any) {
+    document.body.dispatchEvent(new CustomEvent(name, { detail }));
+  }
+
+  private handleError(err: HttpErrorResponse, caught?: any) {
     const errorMessage = err.error instanceof ErrorEvent ?
       `An error occurred: ${err.error.message}` :
       `Server returned code: ${err.status}, error message is: ${err.message}`;
 
-    if (this.globalService && !this.globalService.hasDevices && err.status == 404) {
-      if (localStorage.getItem('popupsBlocked') !== '1'
-        && confirm('No available devices to play to. Open spotify online?\nError message: ' + err.message)) {
-        if (localStorage.getItem('popupsBlocked') !== '0') {
-          const spotifyWin = window.open('https://open.spotify.com', '_blank');
-          if (!spotifyWin || spotifyWin.closed || typeof spotifyWin.closed === 'undefined') {
-            localStorage.setItem('popupsBlocked', '1');
-          } else {
-            localStorage.setItem('popupsBlocked', '0');
-          }
-        } else {
-          alert('Popups are being blocked!');
-        }
-      }
-    } else if (localStorage.getItem('gettingthetoken') !== '1'
-      && localStorage.getItem('popupsBlocked') !== '1'
-      && (confirm('There has been an error.\nMessage: ' + err.message + '\nTry to reauthorize?'))) {
-      localStorage.clear();
-      localStorage.setItem('redirect', window.location.href);
-      const watchToken = setInterval(() => {
-        if (localStorage.getItem('token') !== null && localStorage.getItem('token') !== undefined) {
-          setTimeout(() => {
-            window.location.href = localStorage.getItem('redirect');
-            clearInterval(watchToken);
-          }, 500);
-        }
-      }, 1000);
-      localStorage.setItem('gettingthetoken', '1');
-      if (localStorage.getItem('popupsBlocked') !== '0') {
-        const authWin = window.open(localStorage.getItem('spotifyUrlAuthorize'), '_blank');
-        if (!authWin || authWin.closed || typeof authWin.closed === 'undefined') {
-          localStorage.setItem('popupsBlocked', '1');
-        } else {
-          localStorage.setItem('popupsBlocked', '0');
-        }
-      } else {
-        alert('Popups are being blocked!');
-      }
-    }
+    const hasNoOpenedDevice = this.globalService && !this.globalService.hasDevices && err.status == 404;
+    const isGettingToken = localStorage.getItem('gettingthetoken') == '1';
+
+    if (hasNoOpenedDevice) this.dispatch('openNoDeviceDialog');
+    else if (!isGettingToken) this.dispatch('openErrorUnknownDialog', { message: 'Message: ' + err.message });
 
     return throwError(errorMessage);
   }

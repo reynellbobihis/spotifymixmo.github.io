@@ -19,7 +19,8 @@ export class SpotifyTokenRedirectComponent implements OnInit {
         this.token = this.fragment.replace('access_token=', '').split('&token_type')[0];
         localStorage.setItem('token', this.token);
         localStorage.setItem('gettingthetoken', '0');
-        window.close();
+        localStorage.setItem('allowIntegration', '1');
+        location.href = '/';
       } else {
         this.router.navigate(['/discover']);
       }
