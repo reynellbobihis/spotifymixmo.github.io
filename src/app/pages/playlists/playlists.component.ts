@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { GlobalService } from 'src/app/global.service';
 import { SpotifyService } from 'src/app/spotify.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-playlists',
@@ -15,19 +16,48 @@ export class PlaylistsComponent implements OnInit {
   progress: any;
   files = [];
   dialogRef: any;
+  editMode: boolean = true;
+  displayedColumns: string[];
+  selection: any;
 
   constructor(private dialog: MatDialog, private spotifyService: SpotifyService, private router: Router, private globalService: GlobalService) {
     this.uploadForm = {};
     this.progress = {};
     this.progress.total = 0;
+    this.selection = new SelectionModel<any>(true, []);
   }
 
   ngOnInit() {
     setInterval(() => {
       if (JSON.stringify(this.playlists) !== JSON.stringify(this.globalService.playlists)) {
         this.playlists = this.globalService.playlists;
+        this.setDisplayedDolumns();
       }
     }, 500);
+    window.addEventListener('resize', () => this.setDisplayedDolumns());
+  }
+
+  setDisplayedDolumns() {
+    if (window.innerWidth < 992) this.displayedColumns = ['select', 'image', 'title'];
+    else if (window.innerWidth < 1200) this.displayedColumns = ['select', 'image', 'title', 'tracks'];
+    else this.displayedColumns = ['select', 'image', 'title', 'description', 'tracks', 'public', 'collaborative'];
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.playlists.length;
+    return numSelected == numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.playlists.forEach(row => this.selection.select(row));
+  }
+
+  toggleEditMode() {
+    this.selection.clear();
+    this.editMode = !this.editMode;
   }
 
   fileInputChanged(e) {

@@ -2,13 +2,91 @@
 
   <app-featured-playlists></app-featured-playlists>
 
-  <div class="px-4 pt-4">
+  <div class="px-4 pt-4 pb-5 mb-5">
+
     <div class="d-flex align-items-end justify-content-between">
-      <h6>Your Public Playlists</h6>
-      <button mat-button class="float-right">Manage</button>
+      <h6>Your Playlists</h6>
+      <div *ngIf="editMode; else manage" class="float-right">
+        <button *ngIf="selection.hasValue()" mat-icon-button><mat-icon class="material-icons-outlined">delete</mat-icon></button>
+        <button (click)="toggleEditMode()" mat-icon-button><mat-icon class="material-icons-outlined">view_module</mat-icon></button>
+      </div>
+      <ng-template #manage>
+        <button (click)="toggleEditMode()" mat-icon-button><mat-icon class="material-icons-outlined">list</mat-icon></button>
+      </ng-template>
     </div>
-    <app-playlists-list [playlists]="playlists" [hidden]="['owner']" [options]="{ rows: 2 }"></app-playlists-list>
-    <!-- <pre>{{ playlists|json }}</pre> -->
+
+    <div *ngIf="editMode; else nonEditMode">
+      <table mat-table [dataSource]="playlists" class="styled">
+
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+              color="primary">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)"
+              color="primary">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="image">
+          <th mat-header-cell *matHeaderCellDef>Image</th>
+          <td mat-cell *matCellDef="let element">
+            <img src="{{ element.images[2]?.url }}" class="styled cursor-pointer" width="30" height="30">
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let element">
+            <span routerLink="/playlist/{{ element.id }}" class="cursor-pointer">{{ element.name }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let element">{{ element.description || 'No description' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tracks">
+          <th mat-header-cell *matHeaderCellDef>No. of tracks</th>
+          <td mat-cell *matCellDef="let element">{{ element.tracks.total }} tracks</td>
+        </ng-container>
+
+        <ng-container matColumnDef="public">
+          <th mat-header-cell *matHeaderCellDef>Public</th>
+          <td mat-cell *matCellDef="let element">{{ element.public ? 'Yes' : 'No' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="collaborative">
+          <th mat-header-cell *matHeaderCellDef>Collaborative</th>
+          <td mat-cell *matCellDef="let element">{{ element.collaborative ? 'Yes' : 'No' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="options">
+          <th mat-header-cell *matHeaderCellDef>Options</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button><mat-icon class="material-icons-outlined">edit</mat-icon></button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    
+    <ng-template #nonEditMode>
+      <app-playlists-list [playlists]="playlists" [hidden]="['owner']" [options]="{ rows: 2 }"></app-playlists-list>
+    </ng-template>
+
   </div>
 
   <div class="floating-button p-5 position-fixed">

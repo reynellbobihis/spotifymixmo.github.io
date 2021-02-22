@@ -96,9 +96,10 @@ export class HeaderComponent implements OnInit {
 
       switch (type) {
         case 'playlist':
-          this.spotifyService.getPlaylist(uri.split('playlist:', 2)[1]).subscribe(
-            result => this.tracksFromContext = result.tracks.items
-          );
+          this.spotifyService.getPlaylist(uri.split('playlist:', 2)[1]).subscribe(result => {
+            this.contextDetails = result;
+            this.tracksFromContext = result.tracks.items;
+          });
           break;
         case 'album':
           this.spotifyService.getAlbum(uri.split('album:', 2)[1]).subscribe(result => {

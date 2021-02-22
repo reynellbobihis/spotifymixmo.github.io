@@ -1,5 +1,73 @@
 <div class="scrollbar w-100" style=" min-height: 300px">
-  <table class="tracklist-desktop d-none d-md-block table table-purple mb-0{{ class ? ' ' + class : '' }}">
+
+  <table mat-table [dataSource]="tracks" class="styled trackListTable d-none" #trackListTable>
+
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox
+          (change)="$event ? masterToggle() : null"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+          color="primary">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selection.toggle(item) : null"
+          [checked]="selection.isSelected(item)"
+          color="primary">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="song">
+      <th mat-header-cell *matHeaderCellDef>Title</th>
+      <td mat-cell *matCellDef="let item">{{ getItem(item)?.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="artist">
+      <th mat-header-cell *matHeaderCellDef>Artist</th>
+      <td mat-cell *matCellDef="let item">
+        <span *ngFor="let artist of getItem(item)?.artists; index as j;">
+          <a routerLink="/artists/{{ artist.id }}">{{ artist.name }}</a>
+          <span *ngIf="j < getItem(item)?.artists.length - 1">, </span>
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="album">
+      <th mat-header-cell *matHeaderCellDef>Album</th>
+      <td mat-cell *matCellDef="let item">
+        <span class="cursor-pointer" routerLink="/albums/{{ getItem(item)?.album?.id }}">{{ getItem(item)?.album?.name }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="popularity">
+      <th mat-header-cell *matHeaderCellDef>Popularity</th>
+      <td mat-cell *matCellDef="let item">{{ getItem(item)?.popularity }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="time">
+      <th mat-header-cell *matHeaderCellDef>Time</th>
+      <td mat-cell *matCellDef="let item">{{ msToTime(getItem(item)?.duration_ms) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="option">
+      <th mat-header-cell *matHeaderCellDef>Option</th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-icon-button><mat-icon class="material-icons-outlined">favorite_border</mat-icon></button>
+        <button mat-icon-button><mat-icon class="material-icons-outlined">share</mat-icon></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let item; columns: displayedColumns;" [ngClass]="getItem(item)?.id == currentTrackId ? 'active-track' : ''"></tr>
+  </table>
+
+
+
+  <table class="tracklist-desktop styled d-none d-md-block table table-purple mb-0{{ class ? ' ' + class : '' }}">
     <thead>
       <tr>
         <th class="track-checkbox" (click)="selectAllToggle($event)">
@@ -56,9 +124,12 @@
               </a>
             </div>
           </span>
-          <span>
-            <i #trackMenuTrigger [matMenuTriggerFor]="trackMenu" class="cursor-pointer material-icons-outlined">more_vert</i>
-            <mat-menu #trackMenu="matMenu" class="trackMenu">
+          <span class="position-relative">
+            <span #trackMenuTrigger [matMenuTriggerFor]="trackMenu" [style.position]="'fixed'" [style.left.px]="menuX" [style.top.px]="menuY"></span>
+            <mat-menu [hasBackdrop]="false" #trackMenu="matMenu" class="trackMenu">
+              <!-- <div class="mx-3 my-2"><small><b>{{ getItem(item)?.name }}</b></small></div> -->
+              <button mat-menu-item><b>{{ getItem(item)?.name }}</b></button>
+              <mat-divider></mat-divider>
               <button mat-menu-item>Add to queue</button>
               <button mat-menu-item>Add to a playlist</button>
               <button mat-menu-item>Go to song radio</button>
@@ -71,11 +142,5 @@
       </tr>
     </tbody>
   </table>
-  <div class="tracklist-mobile">
-    <div *ngFor="let item of tracks; index as i;"
-      [class]="getItem(item)?.id == currentTrackId ? 'active-track' : ''"
-      (click)="rowClick($event, contextUri, uris, getItem(item).uri)">
-      <!-- <pre>{{ item|json }}</pre> -->
-    </div>
-  </div>
+
 </div>

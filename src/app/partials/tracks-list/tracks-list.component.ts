@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { SpotifyService } from '../../spotify.service';
 import { GlobalService } from '../../global.service';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-tracks-list',
@@ -13,8 +14,13 @@ export class TracksListComponent implements OnInit {
   currentTrackId: string;
   favoriteTracks: any;
   justClicked = false;
-  isAllSelected = false;
+  _isAllSelected = false;
   lastSelectionIndex = 0;
+  selectedRows: any[];
+  menuX: number = 0;
+  menuY: number = 0;
+  displayedColumns: string[];
+  selection: any;
   @Input() tracks: any[];
   @Input() contextUri: any;
   @Input() uris: any;
@@ -23,23 +29,61 @@ export class TracksListComponent implements OnInit {
   @Input() hideOptions: any;
   @Input() class: any;
   @ViewChildren(MatMenuTrigger) trackMenuTrigger: QueryList<MatMenuTrigger>;
+  @ViewChildren('trackListTable') trackListTable: QueryList<any>;
 
-  constructor(private spotifyService: SpotifyService, private globalService: GlobalService) { }
+  constructor(private spotifyService: SpotifyService, private globalService: GlobalService) {
+    this.selection = new SelectionModel<any>(true, []);
+  }
 
   ngOnInit() {
     setInterval(() => {
       const { playback } = this.globalService;
       this.currentTrackId = playback ? playback.item.id : '';
-      this.favoriteTracks = this.globalService.favoriteTracks;
-    }, 500);
+      if (!this.justClicked) this.favoriteTracks = this.globalService.favoriteTracks;
+    }, 1000);
 
     window.oncontextmenu = (event: any) => {
       const row = event.target.closest('app-tracks-list tbody tr');
       if (row) {
         event.preventDefault();
-        this.trackMenuTrigger.toArray()[row.rowIndex - 1].openMenu();
+        this.menuX = event.x;
+        this.menuY = event.y;
+        const menus = this.trackMenuTrigger.toArray();
+        menus.forEach((menu, index) => { if (menu.menuOpened) menus[index].closeMenu(); });
+        menus[row.rowIndex - 1].openMenu();
       }
     }
+    window.addEventListener('click', () => {
+      const menus = this.trackMenuTrigger.toArray();
+      menus.forEach((menu, index) => { if (menu.menuOpened) menus[index].closeMenu(); });
+    });
+    window.addEventListener('resize', () => this.setDisplayedColumns());
+  }
+
+  ngAfterViewChecked() {
+    if (!this.displayedColumns) this.setDisplayedColumns();
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.tracks.length;
+    return numSelected == numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.tracks.forEach(row => this.selection.select(row));
+  }
+
+  setDisplayedColumns() {
+    setTimeout(() => {
+      const width = this.trackListTable.first._elementRef.nativeElement.offsetWidth;
+      if (width < 768) this.displayedColumns = ['select', 'song', 'option'];
+      else if (width < 992) this.displayedColumns = ['select', 'song', 'artist', 'option'];
+      else if (width < 1200) this.displayedColumns = ['select', 'song', 'artist', 'album', 'option'];
+      else this.displayedColumns = ['select', 'song', 'artist', 'album', 'popularity', 'time', 'option'];
+    }, 100);
   }
 
   playTrack(contextUri?: string, uris?: string[], offset?: string) {
@@ -106,14 +150,14 @@ export class TracksListComponent implements OnInit {
     const table = event.target.closest('table');
     const rows = table.querySelectorAll('tbody tr');
     [ ...rows ].forEach(row => {
-      if (this.isAllSelected) row.classList.remove('checked');
+      if (this._isAllSelected) row.classList.remove('checked');
       else row.classList.add('checked');
       const checkbox = row.querySelector('.track-checkbox input');
-      checkbox.checked = !this.isAllSelected;
+      checkbox.checked = !this._isAllSelected;
     });
-    if (this.isAllSelected) table.classList.remove('has-selection');
+    if (this._isAllSelected) table.classList.remove('has-selection');
     else table.classList.add('has-selection');
-    this.isAllSelected = !this.isAllSelected;
+    this._isAllSelected = !this._isAllSelected;
   }
 
   shareOnFacebook(link) {

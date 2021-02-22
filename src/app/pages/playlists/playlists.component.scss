@@ -15,3 +15,50 @@
   width: 100%;
   height: 100%;
 }
+
+table {
+  tr {
+    td, th {
+      &.mat-column-options,
+      &.mat-column-image {
+        text-align: center;
+      }
+      &:last-of-type {
+        padding-right: 0;
+      }
+      &:first-of-type {
+        padding-left: 0;
+      }
+      @media (min-width: 992px) {
+        &.mat-column-image {
+          text-align: left;
+        }
+        &:last-of-type {
+          padding-right: 24px;
+        }
+        &:first-of-type {
+          padding-left: 24px;
+        }
+      }
+    }
+    &:hover {
+      td.mat-column-image {
+        position: relative;
+        &:before {
+          content: 'play_circle_outline';
+          font-size: 30px;
+          font-family: 'Material Icons Outlined';
+          color: #3f51b5;
+          position: absolute;
+          left: 0;
+          top: calc(50% - 15px);
+          line-height: initial;
+          cursor: pointer;
+        }
+        img {
+          display: none;
+        }
+      }
+    }
+  }
+}

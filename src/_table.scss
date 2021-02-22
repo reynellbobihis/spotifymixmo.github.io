@@ -1,0 +1,134 @@
+table.styled {
+  th, td {
+    border: none;
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    &:last-child {
+      width: 1%;
+      white-space: nowrap;
+      border-radius: 0 4px 4px 0;
+    }
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  }
+
+  @media (hover: hover) {
+    tbody tr:hover td {
+      background-color: #ECE0FD;
+      &, a, i {
+        color: black !important;
+      }
+    }
+  }
+
+  tr {
+    border: none;
+    td, th {
+      font-size: 14px;
+      &.track-checkbox {
+        padding-left: 0;
+        padding-right: 0;
+        width: 0;
+        transition: padding 0.2s, width 0.2s;
+        input {
+          display: none;
+        }
+        i {
+          width: 0;
+          opacity: 0;
+          transition: 0.2s;
+        }
+      }
+      &.mat-cell,
+      &.mat-header-cell {
+        &:last-of-type {
+          padding-right: 0;
+        }
+        &:first-of-type {
+          padding-left: 0;
+        }
+        &.mat-column-select {
+          .mat-checkbox {
+            position: relative;
+            top: 0.25rem;
+          }
+        }
+      }
+      i:not(.fa) {
+        margin-top: -9px;
+        position: relative;
+        top: 6px;
+      }
+    }
+
+    th {
+      color: black;
+      border-bottom: 1px solid #F4F4F4 !important;
+    }
+
+    td {
+      font-weight: 500;
+      &, a, i {
+        color: #6c757d;
+      }
+    }
+
+    td.track-number {
+      position: relative;
+      padding-left: 15px;
+      border-radius: 4px 0 0 4px;
+      span { display: block; }
+      a {
+        display: none;
+        position: absolute;
+        left: 8px;
+      }
+    }
+
+    &:hover {
+      td.track-number {
+        @media (hover: hover) {
+          a { display: block; }
+          span { display: none; }
+        }
+      }
+    }
+
+    &.active-track {
+      td {
+        &.track-number {
+          a { display: block; }
+          span { display: none; }
+        }
+        &, a, i {
+          color: #6200EE;
+        }
+      }
+    }
+  }
+
+  &.has-selection {
+    tr td,
+    tr th {
+      &.track-checkbox {
+        padding-left: 15px;
+      }
+      &.track-number {
+        border-radius: 0 !important;
+      }
+    }
+
+    thead:hover .track-checkbox,
+    tr.checked .track-checkbox {
+      i {
+        width: auto;
+        opacity: 1;
+      }
+    }
+  }
+}

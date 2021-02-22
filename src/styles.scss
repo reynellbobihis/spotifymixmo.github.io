@@ -77,15 +77,22 @@ button,
 
 .main-content {
   transition: 0.2s ease-out;
-  transform: translateX(-100%);
+  position: relative;
+  left: -100%;
   @media(min-width: 480px) {
-    transform: translateX(-320px);
+    left: -320px;
   }
   @media(min-width: 768px) {
-    transform: translateX(0);
+    left: 0;
   }
   .mobile-menu-active & {
-    transform: translateX(0);
+    transform: translateX(100%);
+    @media(min-width: 480px) {
+      transform: translateX(320px);
+    }
+    @media(min-width: 768px) {
+      transform: translateX(0);
+    }
   }
 }
 
@@ -180,7 +187,7 @@ button,
     position: relative;
     overflow: hidden;
     border-radius: 4px;
-    background-color: #F4F4F4;
+    background-color: #dedede;
     img {
       position: absolute;
       top: -9999px;
@@ -254,5 +261,31 @@ button,
     }
   }
 }
+
+img.styled {
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #dedede;
+  }
+  &:after {
+    content: 'image';
+    font-size: 24px;
+    font-family: 'Material Icons Outlined';
+    color: white;
+    position: absolute;
+    left: calc(50% - 12px);
+    top: calc(50% - 12px);
+    line-height: initial;
+  }
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@import 'table';

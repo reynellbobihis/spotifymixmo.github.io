@@ -44,6 +44,7 @@ export class AppComponent  {
       this.dialogRef.afterClosed().subscribe(() => {
         console.log('errorUnknownDialog closed');
       });
+      throw new Error(e.detail.message);
     }
   }
 

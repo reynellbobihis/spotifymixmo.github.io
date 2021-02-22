@@ -92,6 +92,7 @@
             <a href="javascript:" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="text-white material-icons">queue_music</i></a>
             <div class="dropdown-menu dropdown-menu-right mt-2 py-3" (click)="stopPropagation($event)">
+
               <div *ngIf="contextDetails && playback?.context && playback?.context.type == 'album'" class="album-header d-flex mb-4 px-4">
                 <div class="album-header-img">
                   <div class="border-radius">
@@ -100,23 +101,32 @@
                 </div>
                 <div>
                   <p class="text-secondary mb-1"><small>ALBUM</small></p>
-                  <h4>{{ contextDetails.name }}</h4>
+                  <h4 class="cusrsor-pointer" routerLink="/album/{{ contextDetails.id }}">{{ contextDetails.name }}</h4>
                   <p class="mb-0">
                     <small>by: <a class="text-secondary" routerLink="/artists/{{ contextDetails.artists[0]?.id }}">{{ contextDetails.artists[0]?.name }}</a></small>
                     &middot; <small>{{ contextDetails.release_date|date:'MMM yyyy' }}</small> &middot; <small>{{ contextDetails.tracks.items.length }} song{{ contextDetails.tracks.items.length > 1 ? 's' : ''}}</small>
                   </p>
                 </div>
               </div>
-              <!-- <h6 *ngIf="playback?.context" class="mx-4 mb-3 mt-2 pl-3">
-                <small *ngIf="playback?.context.type == 'album'">
-                  Playing from <b>{{ contextDetails.name }}</b> by <b>{{ contextDetails.artists[0].name }}</b>
-                </small>
-                <small *ngIf="playback?.context.type == 'playlist'">
-                  Playing from playlist
-                </small>
-              </h6> -->
+
+              <div *ngIf="contextDetails && playback?.context && playback?.context.type == 'playlist'" class="playlist-header d-flex mb-4 px-4">
+                <div *ngIf="contextDetails.images[0]" class="playlist-header-img">
+                  <div class="border-radius bg-violet-light">
+                    <img *ngIf="contextDetails.images[1]; else fallback" src="{{ contextDetails.images[1]?.url }}" alt="playlist thumbnail">
+                    <ng-template #fallback><img src="{{ contextDetails.images[0]?.url }}" alt="playlist thumbnail"></ng-template>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-secondary mb-1"><small>PLAYLIST</small></p>
+                  <h4 class="cusrsor-pointer" routerLink="/playlist/{{ contextDetails.id }}">{{ contextDetails.name }}</h4>
+                  <p class="mb-0">
+                    <small>by: <a class="text-secondary" href="{{ contextDetails.owner.external_urls.spotify }}" target="_blank">{{ contextDetails.owner.display_name }}</a></small>
+                    &middot; <small>{{ contextDetails.tracks.total }} songs</small>
+                  </p>
+                </div>
+              </div>
+
               <div class="mx-4 pr-4 pb-0 scrollbar" style="max-height: calc(100vh - 230px)">
-                <!-- <pre>{{ playback|json }}</pre> -->
                 <app-tracks-list
                   [tracks]="playback?.context ? tracksFromContext : [playback?.item]"
                   [uris]="playback?.context ? null : [playback?.item]"
@@ -124,10 +134,15 @@
                   [hideAlbums]="true"
                   [hideOptions]="true">
                 </app-tracks-list>
+                <h6 class="m-3">
+                  <small>
+                    <b>Note:</b>
+                    Spotify does not allow to get the actual queue list. List will only show if playing from a playlist or album.
+                  </small>
+                </h6>
                 <!-- <pre>{{ contextDetails|json }}</pre> -->
               </div>
-              <h6 class="mx-4 mb-3 mt-4 pl-4"><small><b>Note:</b> Spotify does not allow to get the actual queue list.
-                List will only show if playing from a playlist or album.</small></h6>
+
             </div>
           </span>
 

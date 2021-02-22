@@ -43,6 +43,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   imports: [
@@ -60,6 +63,9 @@ import { MatMenuModule } from '@angular/material/menu';
     MatProgressBarModule,
     MatChipsModule,
     MatMenuModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatDividerModule,
   ],
   declarations: [
     AppComponent,
