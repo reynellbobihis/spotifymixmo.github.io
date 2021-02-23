@@ -1,7 +1,7 @@
-<div class="playlists-list box-items scrollbar d-flex mt-3 {{ options && options.rows ? 'flex-nowrap' : 'flex-wrap' }}">
+<div class="playlists-list box-items scrollbar d-flex mt-3 {{ !options || !options.rows ? 'flex-wrap' : '' }}">
   <div *ngFor="let item of playlists; let index = index" class="box-item m-0">
-    <div *ngIf="index % options.rows == 0">
-      <div *ngFor="let row of createArray(options ? options.rows : 1)"
+    <div *ngIf="!options || !options.rows || index % options.rows == 0">
+      <div *ngFor="let row of createArray(options && options.rows ? options.rows : 1)"
         class="box-item-group mr-4 mb-4">
         <div *ngIf="playlists[index + row]">
           <div class="box-item-img">

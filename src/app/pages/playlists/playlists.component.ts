@@ -16,7 +16,7 @@ export class PlaylistsComponent implements OnInit {
   progress: any;
   files = [];
   dialogRef: any;
-  editMode: boolean = true;
+  editMode: boolean = false;
   displayedColumns: string[];
   selection: any;
 

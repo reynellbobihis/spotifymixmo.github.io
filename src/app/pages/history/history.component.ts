@@ -16,33 +16,37 @@ export class HistoryComponent implements OnInit {
   constructor(private router: Router, private spotifyService: SpotifyService, private globalService: GlobalService) { }
 
   ngOnInit() {
+    this.getCurrentTrack();
+  }
+
+  getCurrentTrack() {
     const { playback } = this.globalService
     this.currentTrack = playback ? playback.item : false;
-    this.getRecentlyPlayed();
-    setInterval(() => {
-      const isInHistory = this.router.url === '/history';
-      const hasNoSelections = !document.querySelectorAll('app-tracks-list .has-selection').length;
-      const hasNoShownDropdowns = !document.querySelectorAll('.mat-menu-panel.trackMenu').length;
-      if (isInHistory && hasNoSelections && hasNoShownDropdowns) {
-        const { playback } = this.globalService
-        this.currentTrack = playback ? playback.item : false;
-        this.getRecentlyPlayed();
-      }
-    }, 2000);
+    if (this.currentTrack) this.getRecentlyPlayed();
+    else setTimeout(() => this.getCurrentTrack(), 200);
   }
 
   getRecentlyPlayed() {
-    this.spotifyService.getRecentlyPlayed(49).subscribe(
-      result => {
-        console.log('getRecentlyPlayed method is running in recently played...');
-        if (this.currentTrack) {
-          result.items.unshift({ track: this.currentTrack });
+    const isInHistory = this.router.url === '/history';
+    const hasNoSelections = !document.querySelectorAll('app-tracks-list .has-selection').length;
+    const hasNoShownDropdowns = !document.querySelectorAll('.mat-menu-panel.trackMenu').length;
+
+    const { playback } = this.globalService
+    this.currentTrack = playback ? playback.item : false;
+
+    if (isInHistory && hasNoSelections && hasNoShownDropdowns) {
+      this.spotifyService.getRecentlyPlayed(49).subscribe(
+        result => {
+          console.log('getRecentlyPlayed method is running in recently played...');
+          if (this.currentTrack) result.items.unshift({ track: this.currentTrack });
+          this.tracks = result;
+          const newArray = [];
+          result.items.forEach(item => { newArray.push(item.track.uri); });
+          this.uris = newArray;
+
+          setTimeout(() => this.getRecentlyPlayed(), 2000);
         }
-        this.tracks = result;
-        const newArray = [];
-        result.items.forEach(item => { newArray.push(item.track.uri); });
-        this.uris = newArray;
-      }
-    );
+      );
+    }
   }
 }

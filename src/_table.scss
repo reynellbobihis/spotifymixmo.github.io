@@ -17,52 +17,53 @@ table.styled {
     user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
   }
 
-  @media (hover: hover) {
-    tbody tr:hover td {
-      background-color: #ECE0FD;
-      &, a, i {
-        color: black !important;
-      }
-    }
-  }
-
   tr {
     border: none;
     td, th {
-      font-size: 14px;
-      &.track-checkbox {
-        padding-left: 0;
-        padding-right: 0;
-        width: 0;
-        transition: padding 0.2s, width 0.2s;
-        input {
-          display: none;
-        }
-        i {
-          width: 0;
-          opacity: 0;
-          transition: 0.2s;
-        }
-      }
       &.mat-cell,
       &.mat-header-cell {
+        padding: 8px;
         &:last-of-type {
           padding-right: 0;
         }
         &:first-of-type {
           padding-left: 0;
         }
+        @media (hover: hover) {
+          &:last-of-type {
+            padding-right: 16px;
+          }
+          &:first-of-type {
+            padding-left: 16px;
+          }
+        }
         &.mat-column-select {
+          transition: 0;
           .mat-checkbox {
             position: relative;
             top: 0.25rem;
           }
         }
-      }
-      i:not(.fa) {
-        margin-top: -9px;
-        position: relative;
-        top: 6px;
+        &.mat-column-song,
+        &.mat-column-album,
+        &.mat-column-artist {
+          max-width: 300px;
+        }
+        &.mat-column-option,
+        &.mat-column-number {
+          text-align: center;
+          padding: 0 8px;
+        }
+        &.mat-column-number {
+          min-width: 40px;
+          padding: 0;
+          .play-button {
+            display: none;
+          }
+          .number {
+            display: inline-block;
+          }
+        }
       }
     }
 
@@ -78,33 +79,27 @@ table.styled {
       }
     }
 
-    td.track-number {
-      position: relative;
-      padding-left: 15px;
-      border-radius: 4px 0 0 4px;
-      span { display: block; }
-      a {
-        display: none;
-        position: absolute;
-        left: 8px;
-      }
-    }
-
-    &:hover {
-      td.track-number {
-        @media (hover: hover) {
-          a { display: block; }
-          span { display: none; }
+    @media (hover: hover) {
+      &:hover {
+        background-color: #ECE0FD;
+        td {
+          &, a, i {
+            color: black;
+          }
+          &.mat-column-number {
+            .play-button {
+              display: inline-block;
+            }
+            .number {
+              display: none;
+            }
+          }
         }
       }
     }
 
     &.active-track {
       td {
-        &.track-number {
-          a { display: block; }
-          span { display: none; }
-        }
         &, a, i {
           color: #6200EE;
         }
@@ -112,22 +107,19 @@ table.styled {
     }
   }
 
-  &.has-selection {
-    tr td,
-    tr th {
-      &.track-checkbox {
-        padding-left: 15px;
-      }
-      &.track-number {
-        border-radius: 0 !important;
-      }
-    }
-
-    thead:hover .track-checkbox,
-    tr.checked .track-checkbox {
-      i {
-        width: auto;
-        opacity: 1;
+  &:not(.has-selection) {
+    tr {
+      td, th {
+        &.mat-cell,
+        &.mat-header-cell {
+          &.mat-column-select {
+            transition: padding-left 0.25s;
+            padding-left: 0;
+            .mat-checkbox {
+              display: none;
+            }
+          }
+        }
       }
     }
   }

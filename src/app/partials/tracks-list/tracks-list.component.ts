@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChildren, QueryList, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core';
 import { SpotifyService } from '../../spotify.service';
 import { GlobalService } from '../../global.service';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -10,11 +10,10 @@ import { SelectionModel } from '@angular/cdk/collections';
   styleUrls: ['./tracks-list.component.scss']
 })
 export class TracksListComponent implements OnInit {
-  playlist: any;
+  playlists: any;
   currentTrackId: string;
   favoriteTracks: any;
   justClicked = false;
-  _isAllSelected = false;
   lastSelectionIndex = 0;
   selectedRows: any[];
   menuX: number = 0;
@@ -29,40 +28,53 @@ export class TracksListComponent implements OnInit {
   @Input() hideOptions: any;
   @Input() class: any;
   @ViewChildren(MatMenuTrigger) trackMenuTrigger: QueryList<MatMenuTrigger>;
-  @ViewChildren('trackListTable') trackListTable: QueryList<any>;
 
   constructor(private spotifyService: SpotifyService, private globalService: GlobalService) {
     this.selection = new SelectionModel<any>(true, []);
   }
 
   ngOnInit() {
-    setInterval(() => {
-      const { playback } = this.globalService;
-      this.currentTrackId = playback ? playback.item.id : '';
-      if (!this.justClicked) this.favoriteTracks = this.globalService.favoriteTracks;
-    }, 1000);
-
-    window.oncontextmenu = (event: any) => {
-      const row = event.target.closest('app-tracks-list tbody tr');
-      if (row) {
-        event.preventDefault();
-        this.menuX = event.x;
-        this.menuY = event.y;
-        const menus = this.trackMenuTrigger.toArray();
-        menus.forEach((menu, index) => { if (menu.menuOpened) menus[index].closeMenu(); });
-        menus[row.rowIndex - 1].openMenu();
-      }
-    }
-    window.addEventListener('click', () => {
-      const menus = this.trackMenuTrigger.toArray();
-      menus.forEach((menu, index) => { if (menu.menuOpened) menus[index].closeMenu(); });
-    });
+    this.watchPlayback();
+    window.oncontextmenu = (event: any) => this.showMenu(event);
+    // document.body.addEventListener('click', (e) => this.closeAllMenus(e));
     window.addEventListener('resize', () => this.setDisplayedColumns());
+    this.setDisplayedColumns();
   }
 
-  ngAfterViewChecked() {
-    if (!this.displayedColumns) this.setDisplayedColumns();
+  showMenu(event: any) {
+    const isValidTarget = event.target.tagName == 'TD';
+    const row = event.target.closest('app-tracks-list tbody tr');
+    if (row && isValidTarget) {
+      event.preventDefault();
+      this.menuX = event.x - 10;
+      this.menuY = event.y;
+      // this.closeAllMenus(event);
+      row.querySelector('.trackMenuTrigger').click();
+      this.watchPlaylists();
+    }
   }
+
+  watchPlaylists() {
+    const { playlists } = this.globalService;
+    if (playlists) this.playlists = playlists;
+    else setTimeout(() => this.watchPlaylists(), 1000);
+  }
+
+  watchPlayback() {
+    const { playback } = this.globalService;
+    this.currentTrackId = playback ? playback.item.id : '';
+    if (!this.justClicked) this.favoriteTracks = this.globalService.favoriteTracks;
+    setTimeout(() => this.watchPlayback(), 1000);
+  }
+
+  // closeAllMenus(e: any) {
+  //   const isMenuTrigger = !!e.target.closest('.mat-menu-trigger');
+  //   console.log(isMenuTrigger);
+  //   if (!isMenuTrigger) {
+  //     const menus = this.trackMenuTrigger.toArray();
+  //     menus.forEach((menu, index) => { if (menu.menuOpened) menus[index].closeMenu(); });
+  //   }
+  // }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -77,13 +89,20 @@ export class TracksListComponent implements OnInit {
   }
 
   setDisplayedColumns() {
-    setTimeout(() => {
-      const width = this.trackListTable.first._elementRef.nativeElement.offsetWidth;
-      if (width < 768) this.displayedColumns = ['select', 'song', 'option'];
-      else if (width < 992) this.displayedColumns = ['select', 'song', 'artist', 'option'];
-      else if (width < 1200) this.displayedColumns = ['select', 'song', 'artist', 'album', 'option'];
-      else this.displayedColumns = ['select', 'song', 'artist', 'album', 'popularity', 'time', 'option'];
-    }, 100);
+    const width = window.outerWidth;
+    if (width < 768) this.displayedColumns = ['select', 'number', 'song', 'option'];
+    else if (width < 992) this.displayedColumns = ['select', 'number', 'song', 'artist', 'option'];
+    else if (width < 1200) this.displayedColumns = ['select', 'number', 'song', 'artist', 'album', 'option'];
+    else this.displayedColumns = ['select', 'number', 'song', 'artist', 'album', 'time', 'option'];
+
+    const hideOptions = this.hideOptions && this.displayedColumns.indexOf('option') !== -1;
+    if (hideOptions) this.displayedColumns.splice(this.displayedColumns.indexOf('option'), 1);
+
+    const hideArtists = this.hideArtists && this.displayedColumns.indexOf('artist') !== -1;
+    if (hideArtists) this.displayedColumns.splice(this.displayedColumns.indexOf('artist'), 1);
+
+    const hideAlbums = this.hideAlbums && this.displayedColumns.indexOf('album') !== -1;
+    if (hideAlbums) this.displayedColumns.splice(this.displayedColumns.indexOf('album'), 1);
   }
 
   playTrack(contextUri?: string, uris?: string[], offset?: string) {
@@ -102,7 +121,7 @@ export class TracksListComponent implements OnInit {
     return (item && item.track) ? item.track : item;
   }
 
-  rowClick(event: any, contextUri?: string, uris?: string[], offset?: string) {
+  rowClick(item: any, event: any, contextUri?: string, uris?: string[], offset?: string) {
     const { target, shiftKey } = event;
     if (this.justClicked) { // double click
       this.justClicked = false;
@@ -111,77 +130,39 @@ export class TracksListComponent implements OnInit {
       this.justClicked = true;
       setTimeout(() => { // single click
         if (target.tagName === 'TD' && this.justClicked) {
-          const row = target.parentElement;
-          const table = row.parentElement.parentElement;
-          const checkbox = row.querySelector('.track-checkbox input');
+          this.selection.toggle(item);
 
-          if (checkbox.checked) row.classList.remove('checked');
-          else {
-            row.classList.add('checked');
-            if (shiftKey) this.selectRows(table, this.lastSelectionIndex, row.rowIndex);
-            this.lastSelectionIndex = row.rowIndex;
+          if (shiftKey && this.selection.isSelected(item)) { // Multi select
+            const index = this.tracks.indexOf(item);
+            const fromIndex = Math.min(this.lastSelectionIndex, index);
+            const toIndex = Math.max(this.lastSelectionIndex, index);
+
+            for (let index = fromIndex; index <= toIndex; index++) {
+              if (!this.selection.isSelected(this.tracks[index])) {
+                this.selection.toggle(this.tracks[index]);
+              }
+            }
           }
-          checkbox.checked = !checkbox.checked;
-
-          this.refreshTable(table);
+          this.lastSelectionIndex = this.tracks.indexOf(item);
         }
         this.justClicked = false;
       }, 200);
     }
   }
 
-  refreshTable(table: any) {
-    const { length } = table.querySelectorAll('tbody tr.checked');
-    if (length > 0) table.classList.add('has-selection');
-    else table.classList.remove('has-selection');
-  }
-
-  selectRows(table: any, fromIndex: number, toIndex?: number) {
-    const _fromIndex = Math.min(fromIndex, toIndex || fromIndex);
-    const _toIndex = Math.max(fromIndex, toIndex || fromIndex);
-
-    for (let index = _fromIndex; index <= _toIndex; index++) {
-      const row = table.querySelector(`tbody tr:nth-of-type(${index})`);
-      row.classList.add('checked');
-    }
-  }
-
-  selectAllToggle(event) {
-    const table = event.target.closest('table');
-    const rows = table.querySelectorAll('tbody tr');
-    [ ...rows ].forEach(row => {
-      if (this._isAllSelected) row.classList.remove('checked');
-      else row.classList.add('checked');
-      const checkbox = row.querySelector('.track-checkbox input');
-      checkbox.checked = !this._isAllSelected;
-    });
-    if (this._isAllSelected) table.classList.remove('has-selection');
-    else table.classList.add('has-selection');
-    this._isAllSelected = !this._isAllSelected;
-  }
-
   shareOnFacebook(link) {
     window.open(
       'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(link), 
       'facebook-share-dialog', 
-      'width=626,height=436'); 
-    return false;
+      'width=626,height=436');
   }
 
-  stopPropagation(event) {
-    event.stopPropagation();
-  }
-
-  searchIdFromFavorites(id: string): boolean {
+  isFavorite(id: string): boolean {
     return (this.favoriteTracks && JSON.stringify(this.favoriteTracks).indexOf(id) >= 0);
   }
 
-  savedTrack(id: string) {
-    this.spotifyService.savedTrack(id).subscribe();
+  toggleFavorite(id: string) {
+    if (this.isFavorite(id)) this.spotifyService.removeTrack(id).subscribe();
+    else this.spotifyService.savedTrack(id).subscribe();
   }
-
-  removeTrack(id: string) {
-    this.spotifyService.removeTrack(id).subscribe();
-  }
-
 }
